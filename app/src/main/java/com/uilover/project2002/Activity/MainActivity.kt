@@ -23,6 +23,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbHelper: DatabaseHelper
 
+    override fun onStart() {
+        super.onStart()
+
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val loggedInUserEmail = sharedPreferences.getString("logged_in_email", null)
+
+        if (loggedInUserEmail != null) {
+            textView.text = loggedInUserEmail
+            textUserView.text = "Hello ${loggedInUserEmail.split("@").firstOrNull()}"
+        } else {
+            textView.text = ""
+            textUserView.text = "Hello User"
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +48,19 @@ class MainActivity : AppCompatActivity() {
         button = findViewById(R.id.logout)
         textView = findViewById(R.id.textView4)
         textUserView = findViewById(R.id.textView3)
+
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val loggedInUserEmail = sharedPreferences.getString("logged_in_email", null)
+
+        if (loggedInUserEmail != null) {
+            textView.text = loggedInUserEmail
+            textUserView.text = "Hello ${loggedInUserEmail.split("@").firstOrNull()}"
+        } else {
+            // Chuyển về màn hình đăng nhập nếu không có email
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         val cursor = dbHelper.getUser()
 
@@ -57,9 +84,14 @@ class MainActivity : AppCompatActivity() {
 
 
         button.setOnClickListener {
-            // Xóa thông tin người dùng khỏi cơ sở dữ liệu (hoặc không làm gì nếu bạn chỉ cần kiểm tra)
-            val db = dbHelper.writableDatabase
-            db.execSQL("DELETE FROM ${DatabaseHelper.TABLE_USER}")
+            val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.remove("logged_in_email")  // Xóa tất cả thông tin đăng nhập
+            editor.apply()
+
+            textView.text = ""
+            textUserView.text = "Hello User"
+
             val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
             finish()

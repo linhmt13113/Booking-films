@@ -27,12 +27,12 @@ class RegisterActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        val loggedInUserEmail = dbHelper.getLoggedInUser()
-        if (loggedInUserEmail != null) {
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+//        val loggedInUserEmail = dbHelper.getLoggedInUser()
+//        if (loggedInUserEmail != null) {
+//            val intent = Intent(applicationContext, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
     }
 
 
@@ -88,8 +88,13 @@ class RegisterActivity : AppCompatActivity() {
                 dbHelper.insertUser(email, password)
                 Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
 
-                // Chuyển hướng người dùng về màn hình đăng nhập
-                val intent = Intent(applicationContext, LoginActivity::class.java)
+                val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.remove("logged_in_email")  // Lưu email người dùng
+                editor.apply()
+
+
+                val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }

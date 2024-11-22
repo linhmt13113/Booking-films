@@ -27,7 +27,9 @@ class LoginActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        val loggedInUserEmail = dbHelper.getLoggedInUser()
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val loggedInUserEmail = sharedPreferences.getString("logged_in_email", null)
+
         if (loggedInUserEmail != null) {
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
@@ -78,9 +80,14 @@ class LoginActivity : AppCompatActivity() {
 
             // Kiểm tra thông tin đăng nhập từ SQLite
             if (dbHelper.checkUserLogin(email, password)) {
-                // Nếu đăng nhập thành công
+                val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("logged_in_email", email)  // Lưu thông tin email của người dùng
+                editor.apply()
+
                 progressBar.visibility = View.GONE
                 Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
+
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
                 finish()
