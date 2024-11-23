@@ -1,223 +1,231 @@
 package com.uilover.project2002.Activity
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.uilover.project2002.Adapter.FilmListAdapter
 import com.uilover.project2002.Adapter.SliderAdapter
-import com.uilover.project2002.Models.Film
+
 import com.uilover.project2002.Models.SliderItems
 import com.uilover.project2002.R
 import com.uilover.project2002.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
     private lateinit var button: Button
     private lateinit var textView: TextView
     private lateinit var textUserView: TextView
-    private lateinit var user: FirebaseUser
-
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var database: FirebaseDatabase
-    private val sliderHandler = Handler()
-    private val sliderRunnable = Runnable {
-        binding.viewPager2.currentItem = binding.viewPager2.currentItem + 1
+    private lateinit var dbHelper: DatabaseHelper
+
+    override fun onStart() {
+        super.onStart()
+
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val loggedInUserEmail = sharedPreferences.getString("logged_in_email", null)
+
+        if (loggedInUserEmail != null) {
+            textView.text = loggedInUserEmail
+            textUserView.text = "Hello ${loggedInUserEmail.split("@").firstOrNull()}"
+        } else {
+            textView.text = ""
+            textUserView.text = "Hello User"
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (FirebaseApp.getApps(this).isEmpty()) {
-            FirebaseApp.initializeApp(this)
-        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = FirebaseAuth.getInstance()
+        dbHelper = DatabaseHelper(this)
         button = findViewById(R.id.logout)
         textView = findViewById(R.id.textView4)
         textUserView = findViewById(R.id.textView3)
 
-        val user = auth.currentUser
-        if (user == null){
-            intent = Intent(applicationContext, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-        else{
-            textView.setText(user.email)
-            val email = user.email
-            if (email != null) {
-                val name = email.split("@").firstOrNull()
-                if (name != null) {
-                    val capitalizedName = name.replaceFirstChar { it.uppercaseChar() }
-                    textUserView.text = "Hello $capitalizedName"
-                } else {
-                    textUserView.text = "Hello User"
-                }
-            } else {
-                textUserView.text = "Hello User"
-            }
-        }
-        button.setOnClickListener{
-            FirebaseAuth.getInstance().signOut()
-            intent = Intent(applicationContext, LoginActivity::class.java)
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val loggedInUserEmail = sharedPreferences.getString("logged_in_email", null)
+
+        if (loggedInUserEmail != null) {
+            textView.text = loggedInUserEmail
+            textUserView.text = "Hello ${loggedInUserEmail.split("@").firstOrNull()}"
+        } else {
+            // Chuyển về màn hình đăng nhập nếu không có email
+            val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        database = FirebaseDatabase.getInstance()
+        val cursor = dbHelper.getUser()
+
+        if (cursor.moveToFirst()) {
+            // Kiểm tra cột email có tồn tại không
+            val emailColumnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_EMAIL)
+            if (emailColumnIndex >= 0) {  // Kiểm tra xem cột có hợp lệ không
+                val email = cursor.getString(emailColumnIndex)
+                textView.text = email
+                textUserView.text = "Hello ${email.split("@").firstOrNull()?.replaceFirstChar { it.uppercaseChar() } ?: "User"}"
+            } else {
+                // Nếu không tìm thấy cột email
+                Toast.makeText(this, "Email column not found", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            // Nếu không có người dùng trong cơ sở dữ liệu, chuyển đến màn hình đăng nhập
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+
+        button.setOnClickListener {
+            val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.remove("logged_in_email")  // Xóa tất cả thông tin đăng nhập
+            editor.apply()
+
+            textView.text = ""
+            textUserView.text = "Hello User"
+
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
-        initBanner()
-        initTopMoving()
-        initUpcomming()
+        insertBannerData()
+        insertTopMoviesData()
+        insertUpcomingMoviesData()
+
+//        initBanner()
+//        initTopMoving()
+//        initUpcomming()
 
     }
-
-    private fun initTopMoving() {
-        val myRef: DatabaseReference = database.getReference("Items")
-        binding.progressBarTopMovies.visibility = View.VISIBLE
-        val items = ArrayList<Film>()
-
-        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (issue in snapshot.children) {
-                        items.add(issue.getValue(Film::class.java)!!)
-                    }
-                    if (items.isNotEmpty()) {
-                        binding.recyclerViewTopMovies.layoutManager = LinearLayoutManager(
-                            this@MainActivity,
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                        )
-                        binding.recyclerViewTopMovies.adapter = FilmListAdapter(items)
-                    }
-                    binding.progressBarTopMovies.visibility = View.GONE
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
+    private fun insertBannerData() {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.COLUMN_TITLE, "Banner Title")
+            put(DatabaseHelper.COLUMN_IMAGE_URL, "")
+            put(DatabaseHelper.COLUMN_DESCRIPTION, "Banner Description")
+        }
+        db.insert(DatabaseHelper.TABLE_BANNERS, null, values)
     }
 
-    private fun initUpcomming() {
-        val myRef: DatabaseReference = database.getReference("Upcomming")
-        binding.progressBarupcomming.visibility = View.VISIBLE
-        val items = ArrayList<Film>()
-
-        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (issue in snapshot.children) {
-                        items.add(issue.getValue(Film::class.java)!!)
-                    }
-                    if (items.isNotEmpty()) {
-                        binding.recyclerViewUpcomming.layoutManager = LinearLayoutManager(
-                            this@MainActivity,
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                        )
-                        binding.recyclerViewUpcomming.adapter = FilmListAdapter(items)
-                    }
-                    binding.progressBarupcomming.visibility = View.GONE
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
+    private fun insertTopMoviesData() {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.COLUMN_TITLE, "Top Movie Title")
+            put(DatabaseHelper.COLUMN_IMAGE_URL, "")
+            put(DatabaseHelper.COLUMN_DESCRIPTION, "Top Movie Description")
+        }
+        db.insert(DatabaseHelper.TABLE_TOP_MOVIES, null, values)
     }
 
-    private fun initBanner() {
-        val myRef: DatabaseReference = database.getReference("Banners")
-        binding.progressBarSlider.visibility = View.VISIBLE
-
-        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val lists = mutableListOf<SliderItems>()
-                for (childSnapshot in snapshot.children) {
-                    val list = childSnapshot.getValue(SliderItems::class.java)
-                    if (list != null) {
-                        lists.add(list)
-                    }
-                }
-                binding.progressBarSlider.visibility = View.GONE
-                banners(lists)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
+    private fun insertUpcomingMoviesData() {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.COLUMN_TITLE, "Upcoming Movie Title")
+            put(DatabaseHelper.COLUMN_IMAGE_URL, "")
+            put(DatabaseHelper.COLUMN_DESCRIPTION, "Upcoming Movie Description")
+        }
+        db.insert(DatabaseHelper.TABLE_UPCOMING, null, values)
     }
+
+
+
+//    private fun initTopMoving() {
+//        val dbHelper = DatabaseHelper(this)
+//        val db = dbHelper.readableDatabase
+//
+//        val cursor = db.rawQuery("SELECT * FROM ${DatabaseHelper.TABLE_TOP_MOVIES}", null)
+//        val items = ArrayList<Film>()
+//
+//        if (cursor != null && cursor.moveToFirst()) {
+//            do {
+//                val id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID))
+//                val title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE))
+//                val imageUrl = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URL))
+//                val description = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DESCRIPTION))
+//
+//                val film = Film(id, title, imageUrl, description)
+//                items.add(film)
+//            } while (cursor.moveToNext())
+//        }
+//        cursor.close()
+//
+//        binding.recyclerViewTopMovies.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+//        binding.recyclerViewTopMovies.adapter = FilmListAdapter(items)
+//    }
+//
+//
+//    private fun initUpcomming() {
+//        val dbHelper = DatabaseHelper(this)
+//        val db = dbHelper.readableDatabase
+//
+//        val cursor = db.rawQuery("SELECT * FROM ${DatabaseHelper.TABLE_UPCOMING}", null)
+//        val items = ArrayList<Film>()
+//
+//        if (cursor != null && cursor.moveToFirst()) {
+//            do {
+//                val id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID))
+//                val title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE))
+//                val imageUrl = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URL))
+//                val description = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DESCRIPTION))
+//
+//                val film = Film(id, title, imageUrl, description)
+//                items.add(film)
+//            } while (cursor.moveToNext())
+//        }
+//        cursor.close()
+//
+//        binding.recyclerViewUpcomming.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+//        binding.recyclerViewUpcomming.adapter = FilmListAdapter(items)
+//    }
+//
+//
+//    private fun initBanner() {
+//        val dbHelper = DatabaseHelper(this)
+//        val db = dbHelper.readableDatabase
+//
+//        val cursor = db.rawQuery("SELECT * FROM ${DatabaseHelper.TABLE_BANNERS}", null)
+//
+//        val lists = mutableListOf<SliderItems>()
+//        if (cursor != null && cursor.moveToFirst()) {
+//            do {
+//                val id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID))
+//                val title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE))
+//                val imageUrl = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URL))
+//                val description = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DESCRIPTION))
+//
+//                val sliderItem = SliderItems(id, title, imageUrl, description)
+//                lists.add(sliderItem)
+//            } while (cursor.moveToNext())
+//        }
+//        cursor.close()
+//
+//        banners(lists)
+//    }
+
 
     private fun banners(lists: MutableList<SliderItems>) {
         binding.viewPager2.adapter = SliderAdapter(lists, binding.viewPager2)
-        binding.viewPager2.clipToPadding = false
-        binding.viewPager2.clipChildren = false
-        binding.viewPager2.offscreenPageLimit = 3
-        binding.viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-
-        val compositePageTransformer = CompositePageTransformer().apply {
-            addTransformer(MarginPageTransformer(40))
-            addTransformer(ViewPager2.PageTransformer { page, position ->
-                val r = 1 - Math.abs(position)
-                page.scaleY = 0.85f + r * 0.15f
-            })
-        }
-
-        binding.viewPager2.setPageTransformer(compositePageTransformer)
-        binding.viewPager2.currentItem = 1
-        binding.viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                sliderHandler.removeCallbacks(sliderRunnable)
-            }
-        })
-
-
     }
 
-    override fun onPause() {
-        super.onPause()
-        sliderHandler.removeCallbacks(sliderRunnable)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        sliderHandler.postDelayed(sliderRunnable, 2000)
+    override fun onDestroy() {
+        super.onDestroy()
+        dbHelper.close() // Đóng cơ sở dữ liệu
     }
 }

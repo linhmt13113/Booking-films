@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
+
+
 import com.uilover.project2002.R
 
 class LoginActivity : AppCompatActivity() {
@@ -22,15 +22,17 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var editTextEmail: TextInputEditText
     private lateinit var editTextPassword: TextInputEditText
     private lateinit var buttonLogin: Button
-    private lateinit var auth: FirebaseAuth
+
     private lateinit var progressBar: ProgressBar
     private lateinit var textView: TextView
+    private lateinit var dbHelper: DatabaseHelper
 
     public override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            intent = Intent(applicationContext, MainActivity::class.java)
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val loggedInUserEmail = sharedPreferences.getString("logged_in_email", null)
+        if (loggedInUserEmail != null) {
+            val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -46,16 +48,14 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        if (FirebaseApp.getApps(this).isEmpty()) {
-            FirebaseApp.initializeApp(this)
-        }
-
+        dbHelper = DatabaseHelper(this)
         editTextEmail = findViewById(R.id.email)
         editTextPassword = findViewById(R.id.password)
         buttonLogin = findViewById(R.id.btn_login)
-        auth = FirebaseAuth.getInstance()
         progressBar = findViewById(R.id.progressBar)
         textView = findViewById(R.id.registerNow)
+
+        //nav
         textView.setOnClickListener{
             val intent = Intent(applicationContext, RegisterActivity::class.java)
             startActivity(intent)
@@ -69,30 +69,34 @@ class LoginActivity : AppCompatActivity() {
 
             if(TextUtils.isEmpty(email)){
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
                 return@setOnClickListener
             }
 
             if(TextUtils.isEmpty(password)){
                 Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
                 return@setOnClickListener
             }
 
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    progressBar.visibility = View.GONE
-                    if (task.isSuccessful) {
-                        Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
-                        intent = Intent(applicationContext, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(
-                            baseContext,
-                            "Authentication failed.",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    }
-                }
+            // Kiểm tra thông tin đăng nhập từ SQLite
+            if (dbHelper.checkUserLogin(email, password)) {
+                val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("logged_in_email", email)  // Lưu thông tin email của người dùng
+                editor.apply()
+
+                progressBar.visibility = View.GONE
+                Toast.makeText(applicationContext, "Login successful", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                // Nếu thông tin đăng nhập không đúng
+                progressBar.visibility = View.GONE
+                Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

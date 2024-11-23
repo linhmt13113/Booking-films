@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
 import com.uilover.project2002.R
 
 class RegisterActivity : AppCompatActivity() {
@@ -22,18 +20,19 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var editTextEmail: TextInputEditText
     private lateinit var editTextPassword: TextInputEditText
     private lateinit var buttonReg: Button
-    private lateinit var auth: FirebaseAuth
+
     private lateinit var progressBar: ProgressBar
     private lateinit var textView: TextView
+    private lateinit var dbHelper: DatabaseHelper
 
     public override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+//        val loggedInUserEmail = dbHelper.getLoggedInUser()
+//        if (loggedInUserEmail != null) {
+//            val intent = Intent(applicationContext, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
     }
 
 
@@ -47,16 +46,15 @@ class RegisterActivity : AppCompatActivity() {
             insets
         }
 
-        if (FirebaseApp.getApps(this).isEmpty()) {
-            FirebaseApp.initializeApp(this)
-        }
 
+        dbHelper = DatabaseHelper(this)
         editTextEmail = findViewById(R.id.email)
         editTextPassword = findViewById(R.id.password)
         buttonReg = findViewById(R.id.btn_register)
-        auth = FirebaseAuth.getInstance()
         progressBar = findViewById(R.id.progressBar)
         textView = findViewById(R.id.loginNow)
+
+
         textView.setOnClickListener{
             val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
@@ -68,38 +66,39 @@ class RegisterActivity : AppCompatActivity() {
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
 
-            if(TextUtils.isEmpty(email)){
+            if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
                 return@setOnClickListener
             }
 
-            if(TextUtils.isEmpty(password)){
+            if (TextUtils.isEmpty(password)) {
                 Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
                 return@setOnClickListener
             }
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    progressBar.visibility = View.GONE
-                    if (task.isSuccessful) {
 
-                        Toast.makeText(
-                            baseContext,
-                            "Account created.",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        intent = Intent(applicationContext, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(
-                            baseContext,
-                            "Authentication failed.",
-                            Toast.LENGTH_SHORT,
-                        ).show()
 
-                    }
-                }
+            // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu hay chưa
+            if (dbHelper.checkUserExists(email)) {
+                Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+            } else {
+                // Lưu thông tin người dùng vào SQLite
+                dbHelper.insertUser(email, password)
+                Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
+
+                val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.remove("logged_in_email")  // Lưu email người dùng
+                editor.apply()
+
+
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 }
