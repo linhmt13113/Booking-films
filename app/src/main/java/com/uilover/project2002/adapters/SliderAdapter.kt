@@ -1,6 +1,5 @@
-package com.uilover.project2002.Adapter
+package com.uilover.project2002.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,13 +8,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.uilover.project2002.Models.SliderItems
+import com.uilover.project2002.data.model.SliderItems
 import com.uilover.project2002.databinding.ViewholderSliderBinding
 
 class SliderAdapter(
     private var sliderItems: MutableList<SliderItems>, private val viewPager2: ViewPager2
 ) : RecyclerView.Adapter<SliderAdapter.SliderViewHolder>() {
-    private var context: Context? = null
     private val runnable = Runnable {
         sliderItems.addAll(sliderItems)
         notifyDataSetChanged()
@@ -25,27 +23,23 @@ class SliderAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(sliderItem: SliderItems) {
-            val requestOptions= RequestOptions().transform(CenterCrop(), RoundedCorners(60))
-            context?.let {
-                Glide.with(it)
-                    .load(sliderItem.image)
-                    .apply (requestOptions)
-                    .into(binding.imageSlide)
-            }
+            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(60))
+            Glide.with(itemView.context)
+                .load(sliderItem.image)
+                .apply(requestOptions)
+                .into(binding.imageSlide)
         }
-
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SliderAdapter.SliderViewHolder {
-        context = parent.context
-        val binding = ViewholderSliderBinding.inflate(LayoutInflater.from(context), parent, false)
+    ): SliderViewHolder {
+        val binding = ViewholderSliderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SliderViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: SliderAdapter.SliderViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SliderViewHolder, position: Int) {
         holder.bind(sliderItems[position])
         if (position == sliderItems.size - 2) {
             viewPager2.post(runnable)

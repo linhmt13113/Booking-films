@@ -1,4 +1,4 @@
-package com.uilover.project2002.Activity
+package com.uilover.project2002.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,13 +15,17 @@ class IntroActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.startBtn.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+            sharedPreferences.edit().clear().apply()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
+
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
-
     }
 }

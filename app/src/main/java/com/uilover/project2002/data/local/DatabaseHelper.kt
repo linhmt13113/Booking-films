@@ -1,4 +1,4 @@
-package com.uilover.project2002.Activity
+package com.uilover.project2002.data.local
 
 
 import android.content.ContentValues

@@ -1,4 +1,4 @@
-package com.uilover.project2002.Adapter
+package com.uilover.project2002.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,17 +8,16 @@ import com.uilover.project2002.R
 import com.uilover.project2002.databinding.ItemTimeBinding
 
 class TimeAdapter(private val timeSlots: List<String>) :
-    RecyclerView.Adapter<TimeAdapter.TimeViewholder>() {
+    RecyclerView.Adapter<TimeAdapter.TimeViewHolder>() {
     private var selectedPosition = -1
     private var lastSelectedPosition = -1
 
-
-    inner class TimeViewholder(private val binding: ItemTimeBinding) :
+    inner class TimeViewHolder(private val binding: ItemTimeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(time: String) {
             binding.TextViewTime.text = time
-            if (selectedPosition == position) {
+            if (selectedPosition == adapterPosition) {
                 binding.TextViewTime.setBackgroundResource(R.drawable.white_bg)
                 binding.TextViewTime.setTextColor(
                     ContextCompat.getColor(
@@ -37,7 +36,7 @@ class TimeAdapter(private val timeSlots: List<String>) :
             }
 
             binding.root.setOnClickListener {
-                val position = position
+                val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     lastSelectedPosition = selectedPosition
                     selectedPosition = position
@@ -48,8 +47,8 @@ class TimeAdapter(private val timeSlots: List<String>) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeAdapter.TimeViewholder {
-        return TimeViewholder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
+        return TimeViewHolder(
             ItemTimeBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -58,8 +57,8 @@ class TimeAdapter(private val timeSlots: List<String>) :
         )
     }
 
-    override fun onBindViewHolder(holder: TimeAdapter.TimeViewholder, position: Int) {
-       holder.bind(timeSlots[position])
+    override fun onBindViewHolder(holder: TimeViewHolder, position: Int) {
+        holder.bind(timeSlots[position])
     }
 
     override fun getItemCount(): Int = timeSlots.size

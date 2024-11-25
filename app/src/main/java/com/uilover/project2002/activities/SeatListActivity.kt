@@ -1,4 +1,4 @@
-package com.uilover.project2002.Activity
+package com.uilover.project2002.activities
 
 import android.icu.text.DecimalFormat
 import android.os.Bundle
@@ -6,11 +6,11 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.uilover.project2002.Adapter.DateAdapter
-import com.uilover.project2002.Adapter.SeatListAdapter
-import com.uilover.project2002.Adapter.TimeAdapter
-import com.uilover.project2002.Models.Film
-import com.uilover.project2002.Models.Seat
+import com.uilover.project2002.adapters.DateAdapter
+import com.uilover.project2002.adapters.SeatListAdapter
+import com.uilover.project2002.adapters.TimeAdapter
+import com.uilover.project2002.data.model.Film
+import com.uilover.project2002.data.model.Seat
 import com.uilover.project2002.databinding.ActivitySeatListBinding
 import java.time.LocalDate
 import java.time.LocalTime
@@ -35,7 +35,6 @@ class SeatListActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
-
     }
 
     private fun initSeatsList() {
@@ -59,19 +58,17 @@ class SeatListActivity : AppCompatActivity() {
             seatList.add(Seat(SeatStatus, SeatName))
         }
 
-        val SeatAdapter = SeatListAdapter(seatList, this, object : SeatListAdapter.SelectedSeat {
-            override fun Return(selectedName: String, num: Int) {
+        val seatAdapter = SeatListAdapter(seatList, object : SeatListAdapter.SelectedSeat {
+            override fun returnSelected(selectedName: String, num: Int) {
                 binding.numberSelectedTxt.text = "$num Seat Selected"
                 val df = DecimalFormat("#.##")
                 price = df.format(num * film.price).toDouble()
                 number = num
                 binding.priceTxt.text = "$$price"
             }
-
         })
-        binding.seatRecyclerview.adapter = SeatAdapter
+        binding.seatRecyclerview.adapter = seatAdapter
         binding.seatRecyclerview.isNestedScrollingEnabled = false
-
 
         binding.TimeRecyclerview.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
