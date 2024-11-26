@@ -1,13 +1,15 @@
 package com.uilover.project2002.data.local
 
-
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.uilover.project2002.data.model.Film
+import com.uilover.project2002.data.model.SliderItems
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "movies.db"
@@ -16,37 +18,48 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val TABLE_BANNERS = "banners"
         const val TABLE_TOP_MOVIES = "top_movies"
         const val TABLE_UPCOMING = "upcoming"
-
         const val TABLE_USER = "user"
+        const val TABLE_FILMS = "films"
+        const val TABLE_SLIDER_ITEMS = "slider_items"
+
         const val COLUMN_USER_ID = "id"
         const val COLUMN_ID = "id"
         const val COLUMN_USER_EMAIL = "email"
-
         const val COLUMN_TITLE = "title"
         const val COLUMN_IMAGE_URL = "image_url"
         const val COLUMN_DESCRIPTION = "description"
         const val COLUMN_TIMESTAMP = "timestamp"
         const val COLUMN_USER_PASSWORD = "password"
-
+        const val COLUMN_PRICE = "price"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createUserTable = "CREATE TABLE $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT,$COLUMN_USER_PASSWORD TEXT)"
-        val createBannersTable = "CREATE TABLE $TABLE_BANNERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
-        val createTopMoviesTable = "CREATE TABLE $TABLE_TOP_MOVIES ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
-        val createUpcomingTable = "CREATE TABLE $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
+        val createUserTable =
+            "CREATE TABLE $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT, $COLUMN_USER_PASSWORD TEXT)"
+        val createBannersTable =
+            "CREATE TABLE $TABLE_BANNERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
+        val createTopMoviesTable =
+            "CREATE TABLE $TABLE_TOP_MOVIES ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
+        val createUpcomingTable =
+            "CREATE TABLE $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
+        val createFilmsTable =
+            "CREATE TABLE $TABLE_FILMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_PRICE REAL)"
+        val createSliderItemsTable =
+            "CREATE TABLE $TABLE_SLIDER_ITEMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
 
         db?.execSQL(createUserTable)
         db?.execSQL(createBannersTable)
         db?.execSQL(createTopMoviesTable)
         db?.execSQL(createUpcomingTable)
+        db?.execSQL(createFilmsTable)
+        db?.execSQL(createSliderItemsTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-//        db?.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_BANNERS")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_TOP_MOVIES")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_UPCOMING")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_FILMS")
         onCreate(db)
     }
 
@@ -79,7 +92,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return cursor.count > 0
     }
 
-
     fun getLoggedInUser(): String? {
         val db = readableDatabase
         val cursor = db.query(
@@ -100,5 +112,69 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             TABLE_USER, arrayOf(COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD),
             null, null, null, null, null
         )
+    }
+
+    fun insertFilm(film: Film) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_TITLE, film.title)
+            put(COLUMN_DESCRIPTION, film.description)
+            put(COLUMN_IMAGE_URL, film.poster)
+            put(COLUMN_PRICE, film.price)
+        }
+        db.insert(TABLE_FILMS, null, values)
+    }
+
+    fun getAllFilms(): List<Film> {
+        val films = mutableListOf<Film>()
+        val db = readableDatabase
+        val cursor = db.query(TABLE_FILMS, null, null, null, null, null, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val titleIndex = cursor.getColumnIndex(COLUMN_TITLE)
+                val descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION)
+                val posterIndex = cursor.getColumnIndex(COLUMN_IMAGE_URL)
+                val priceIndex = cursor.getColumnIndex(COLUMN_PRICE)
+
+                val film = Film(
+                    title = if (titleIndex >= 0) cursor.getString(titleIndex) else "",
+                    description = if (descriptionIndex >= 0) cursor.getString(descriptionIndex) else "",
+                    poster = if (posterIndex >= 0) cursor.getString(posterIndex) else "",
+                    time = null,
+                    trailer = null,
+                    imdb = 0,
+                    year = 0,
+                    price = if (priceIndex >= 0) cursor.getDouble(priceIndex) else 0.0,
+                    genre = arrayListOf(),
+                    casts = arrayListOf()
+                )
+                films.add(film)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return films
+    }
+
+    fun getSliderItems(): List<SliderItems> {
+        val sliderItems = mutableListOf<SliderItems>()
+        val db = readableDatabase
+        val cursor = db.query(TABLE_SLIDER_ITEMS, null, null, null, null, null, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val titleIndex = cursor.getColumnIndex(COLUMN_TITLE)
+                val imageUrlIndex = cursor.getColumnIndex(COLUMN_IMAGE_URL)
+                val descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION)
+
+                val sliderItem = SliderItems(
+                    title = if (titleIndex >= 0) cursor.getString(titleIndex) else "",
+                    imageUrl = if (imageUrlIndex >= 0) cursor.getString(imageUrlIndex) else "",
+                    description = if (descriptionIndex >= 0) cursor.getString(descriptionIndex) else ""
+                )
+                sliderItems.add(sliderItem)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return sliderItems
     }
 }

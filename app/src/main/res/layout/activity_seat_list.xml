@@ -76,7 +76,12 @@
                     android:id="@+id/imageView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/cinema" />
+                    app:srcCompat="@drawable/cinema"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="16dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/seatRecyclerview"
@@ -114,14 +119,13 @@
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:text="Available" />
-                <View
 
+                <View
                     android:layout_width="10dp"
                     android:background="@drawable/ic_seat_selected"
                     android:layout_height="10dp" />
 
                 <TextView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -129,14 +133,13 @@
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:text="Selected" />
-                <View
 
+                <View
                     android:layout_width="10dp"
                     android:background="@drawable/ic_seat_unavailable"
                     android:layout_height="10dp" />
 
                 <TextView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

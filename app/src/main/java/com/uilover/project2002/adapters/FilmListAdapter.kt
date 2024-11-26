@@ -12,7 +12,29 @@ import com.uilover.project2002.activities.FilmDetailActivity
 import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.databinding.ViewholderFilmBinding
 
-class FilmListAdapter(private val items: ArrayList<Film>) : RecyclerView.Adapter<FilmListAdapter.ViewHolder>() {
+class FilmListAdapter : RecyclerView.Adapter<FilmListAdapter.ViewHolder>() {
+
+    private val films = mutableListOf<Film>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ViewholderFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val film = films[position]
+        holder.bind(film)
+    }
+
+    override fun getItemCount(): Int {
+        return films.size
+    }
+
+    fun submitList(films: List<Film>) {
+        this.films.clear()
+        this.films.addAll(films)
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(private val binding: ViewholderFilmBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(film: Film) {
@@ -32,15 +54,4 @@ class FilmListAdapter(private val items: ArrayList<Film>) : RecyclerView.Adapter
             }
         }
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ViewholderFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
-    }
-
-    override fun getItemCount(): Int = items.size
 }
