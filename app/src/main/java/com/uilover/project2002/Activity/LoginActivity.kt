@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -26,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var textView: TextView
     private lateinit var dbHelper: DatabaseHelper
+
 
     public override fun onStart() {
         super.onStart()
@@ -79,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Kiểm tra thông tin đăng nhập từ SQLite
             if (dbHelper.checkUserLogin(email, password)) {
                 val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
