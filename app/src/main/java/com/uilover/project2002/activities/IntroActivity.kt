@@ -5,14 +5,21 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.uilover.project2002.databinding.ActivityIntroBinding
+import com.uilover.project2002.repositories.MainRepository
 
 class IntroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIntroBinding
+    private lateinit var mainRepository: MainRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        mainRepository = MainRepository(this)
+
+        // Thêm dữ liệu phim khi khởi động ứng dụng
+        addDataFromCode()
 
         binding.startBtn.setOnClickListener {
             val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
@@ -22,10 +29,13 @@ class IntroActivity : AppCompatActivity() {
             finish()
         }
 
-
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
+    }
+
+    private fun addDataFromCode() {
+        mainRepository.insertInitialData()
     }
 }

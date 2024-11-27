@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         setupSliderRecyclerView()
         observeViewModel()
         loadFilms()
+        loadTopMovies()
     }
 
     private fun setupRecyclerView() {
@@ -88,6 +89,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        mainViewModel.topMovies.observe(this, { topMovies ->
+            // Hiển thị topMovies tại nơi bạn muốn trong giao diện
+            // Ví dụ: bạn có thể thiết lập một RecyclerView khác để hiển thị topMovies
+            Log.d("MainActivity", "Top Movies loaded: ${topMovies.size}")
+        })
+
         // Xử lý sự kiện nhấn "See All"
         binding.textView6.setOnClickListener {
             // Mở một dialog hoặc activity mới để hiển thị tất cả các bộ phim
@@ -102,6 +109,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadFilms() {
         mainViewModel.loadFilms()
+    }
+
+    private fun loadTopMovies() {
+        mainViewModel.loadTopMovies()
     }
 
     private fun navigateToLogin() {

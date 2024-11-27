@@ -13,7 +13,7 @@ class DatabaseHelper(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "movies.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         const val TABLE_BANNERS = "banners"
         const val TABLE_TOP_MOVIES = "top_movies"
@@ -34,25 +34,12 @@ class DatabaseHelper(context: Context) :
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createUserTable =
-            "CREATE TABLE $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT, $COLUMN_USER_PASSWORD TEXT)"
-        val createBannersTable =
-            "CREATE TABLE $TABLE_BANNERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
-        val createTopMoviesTable =
-            "CREATE TABLE $TABLE_TOP_MOVIES ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
-        val createUpcomingTable =
-            "CREATE TABLE $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
-        val createFilmsTable =
-            "CREATE TABLE $TABLE_FILMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_PRICE REAL)"
-        val createSliderItemsTable =
-            "CREATE TABLE $TABLE_SLIDER_ITEMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)"
-
-        db?.execSQL(createUserTable)
-        db?.execSQL(createBannersTable)
-        db?.execSQL(createTopMoviesTable)
-        db?.execSQL(createUpcomingTable)
-        db?.execSQL(createFilmsTable)
-        db?.execSQL(createSliderItemsTable)
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT, $COLUMN_USER_PASSWORD TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_BANNERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_TOP_MOVIES ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_PRICE REAL)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_FILMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_PRICE REAL)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SLIDER_ITEMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -60,6 +47,7 @@ class DatabaseHelper(context: Context) :
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_TOP_MOVIES")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_UPCOMING")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_FILMS")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_SLIDER_ITEMS")
         onCreate(db)
     }
 
@@ -125,6 +113,17 @@ class DatabaseHelper(context: Context) :
         db.insert(TABLE_FILMS, null, values)
     }
 
+    fun insertTopMovie(film: Film) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_TITLE, film.title)
+            put(COLUMN_DESCRIPTION, film.description)
+            put(COLUMN_IMAGE_URL, film.poster)
+            put(COLUMN_PRICE, film.price)
+        }
+        db.insert(TABLE_TOP_MOVIES, null, values)
+    }
+
     fun getAllFilms(): List<Film> {
         val films = mutableListOf<Film>()
         val db = readableDatabase
@@ -154,6 +153,45 @@ class DatabaseHelper(context: Context) :
         cursor.close()
         return films
     }
+
+    fun getTopMovies(): List<Film> {
+        val topMovies = mutableListOf<Film>()
+        val db = readableDatabase
+        val cursor = db.query(TABLE_TOP_MOVIES, null, null, null, null, null, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val titleIndex = cursor.getColumnIndex(COLUMN_TITLE)
+                val descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION)
+                val posterIndex = cursor.getColumnIndex(COLUMN_IMAGE_URL)
+                val priceIndex = cursor.getColumnIndex(COLUMN_PRICE)
+
+                val film = Film(
+                    title = if (titleIndex >= 0) cursor.getString(titleIndex) else "",
+                    description = if (descriptionIndex >= 0) cursor.getString(descriptionIndex) else "",
+                    poster = if (posterIndex >= 0) cursor.getString(posterIndex) else "",
+                    time = null,
+                    trailer = null,
+                    imdb = 0,
+                    year = 0,
+                    price = if (priceIndex >= 0) cursor.getDouble(priceIndex) else 0.0,
+                    genre = arrayListOf(),
+                    casts = arrayListOf()
+                )
+                topMovies.add(film)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return topMovies
+    }
+
+    fun insertUpcomingMovie(film: Film) {
+        val db = writableDatabase
+        val values = ContentValues().apply { put(COLUMN_TITLE, film.title)
+            put(COLUMN_DESCRIPTION, film.description)
+            put(COLUMN_IMAGE_URL, film.poster) }
+        db.insert(TABLE_UPCOMING, null, values)
+    }
+
 
     fun getSliderItems(): List<SliderItems> {
         val sliderItems = mutableListOf<SliderItems>()
