@@ -1,4 +1,4 @@
-package com.uilover.project2002.Models
+package com.uilover.project2002.data.model
 
 data class Seat(var status:SeatStatus,var name:String){
 

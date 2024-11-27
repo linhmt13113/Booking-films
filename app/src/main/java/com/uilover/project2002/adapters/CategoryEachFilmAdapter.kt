@@ -1,4 +1,4 @@
-package com.uilover.project2002.Adapter
+package com.uilover.project2002.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,19 +6,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.uilover.project2002.databinding.ViewholderCategoryBinding
 
 class CategoryEachFilmAdapter(private val items: List<String>) :
-    RecyclerView.Adapter<CategoryEachFilmAdapter.Viewholder>() {
-    class Viewholder(val binding: ViewholderCategoryBinding) : RecyclerView.ViewHolder(binding.root)
+    RecyclerView.Adapter<CategoryEachFilmAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): CategoryEachFilmAdapter.Viewholder {
+    class ViewHolder(val binding: ViewholderCategoryBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
             ViewholderCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return Viewholder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CategoryEachFilmAdapter.Viewholder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.titleTxt.text = items[position]
     }
 

@@ -1,11 +1,11 @@
-package com.uilover.project2002.Models
+package com.uilover.project2002.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
 
 data class Cast(
-    var PicUrl:String?=null,
-    var Actor:String?=null
+    var picUrl:String?=null,
+    var actor:String?=null
 ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -14,8 +14,8 @@ data class Cast(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(PicUrl)
-        parcel.writeString(Actor)
+        parcel.writeString(picUrl)
+        parcel.writeString(actor)
     }
 
     override fun describeContents(): Int {
