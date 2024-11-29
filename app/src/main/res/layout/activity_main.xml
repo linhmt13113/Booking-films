@@ -23,7 +23,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="100dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginEnd="16dp">
 
@@ -59,18 +59,37 @@
                     app:layout_constraintStart_toStartOf="@+id/textView3"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-                <Button
-                    android:id="@+id/logout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:backgroundTint="@color/light_blue"
-                    android:padding="8dp"
-                    android:text="@string/logout"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start"
+                android:paddingEnd="16dp">
+
+            <ImageView
+                android:id="@+id/menu_button"
+                android:layout_width="42dp"
+                android:layout_height="36dp"
+                android:src="@drawable/baseline_menu_24"
+                android:layout_marginBottom="10dp" />
+
+        </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/menuLayout"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                tools:ignore="MissingConstraints"
+                android:visibility="gone">
+
+                <include layout="@layout/nav_drawer" />
+            </RelativeLayout>
 
             <!-- Top Movies Section -->
             <LinearLayout

@@ -5,13 +5,23 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.RelativeLayout
+import android.widget.Switch
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
+
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.uilover.project2002.R
 import com.uilover.project2002.adapters.FilmListAdapter
 import com.uilover.project2002.adapters.SliderAdapter
 import com.uilover.project2002.data.model.Film
-import com.uilover.project2002.data.model.SliderItems
+
 import com.uilover.project2002.databinding.ActivityMainBinding
 import com.uilover.project2002.dialogs.AllFilmsDialog
 import com.uilover.project2002.viewmodels.MainViewModel
@@ -22,6 +32,12 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels { MainViewModelFactory(this) }
     private lateinit var filmListAdapter: FilmListAdapter
     private lateinit var sliderAdapter: SliderAdapter
+    private lateinit var coordinatorLayout: ConstraintLayout
+    private lateinit var menuButton: ImageView
+    private lateinit var logout: TextView
+    private lateinit var navDrawer: RelativeLayout
+    private lateinit var darkModeSwitch: Switch
+
 
     override fun onStart() {
         super.onStart()
@@ -38,6 +54,18 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
+        coordinatorLayout  = findViewById(R.id.coordinatorLayout)
+        menuButton = findViewById(R.id.menu_button)
+        navDrawer = findViewById(R.id.menuLayout)
+        logout = findViewById(R.id.logout)
+        darkModeSwitch = findViewById(R.id.switcher)
+
+        navDrawer.visibility = View.GONE
+
+        menuButton.setOnClickListener {
+            toggleMenuVisibility()
+        }
+
         mainViewModel.loggedInUserEmail.observe(this, { email ->
             if (email != null) {
                 binding.textView4.text = email
@@ -47,9 +75,28 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        binding.logout.setOnClickListener {
+        logout.setOnClickListener {
             mainViewModel.logout()
             navigateToIntro()
+        }
+
+        val isDarkModeEnabled = getDarkModeState()
+        if (isDarkModeEnabled) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
+        darkModeSwitch.setChecked(isDarkModeEnabled)
+        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            // Lưu trạng thái chế độ tối
+            saveDarkModeState(isChecked)
+            recreate()
         }
 
         mainViewModel.insertInitialData()
@@ -59,6 +106,14 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
         loadFilms()
         loadTopMovies()
+    }
+
+    private fun toggleMenuVisibility() {
+        if (navDrawer.isVisible) {
+            navDrawer.visibility = View.GONE // Nếu menu đang hiển thị, ẩn đi
+        } else {
+            navDrawer.visibility = View.VISIBLE // Nếu menu đang ẩn, hiển thị nó
+        }
     }
 
     private fun setupRecyclerView() {
@@ -102,6 +157,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun showAllFilmsDialog(films: List<Film>) {
         val allFilmsDialog = AllFilmsDialog(this, films)
         allFilmsDialog.show()
@@ -125,6 +181,18 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, IntroActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun saveDarkModeState(isDarkMode: Boolean) {
+        val sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("dark_mode", isDarkMode)
+        editor.apply()
+    }
+
+    private fun getDarkModeState(): Boolean {
+        val sharedPreferences = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return sharedPreferences.getBoolean("dark_mode", false) // Mặc định là chế độ sáng
     }
 
     override fun onDestroy() {
