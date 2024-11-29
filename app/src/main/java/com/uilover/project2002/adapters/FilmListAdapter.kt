@@ -12,9 +12,15 @@ import com.uilover.project2002.activities.FilmDetailActivity
 import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.databinding.ViewholderFilmBinding
 
-class FilmListAdapter : RecyclerView.Adapter<FilmListAdapter.ViewHolder>() {
+class FilmListAdapter(private val disableClick: Boolean = false) : RecyclerView.Adapter<FilmListAdapter.ViewHolder>() {
 
     private val films = mutableListOf<Film>()
+
+    private var onItemClick: ((Film) -> Unit)? = null
+
+    fun setOnItemClickListener(onItemClick: ((Film) -> Unit)?) {
+        this.onItemClick = onItemClick
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ViewholderFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -47,10 +53,14 @@ class FilmListAdapter : RecyclerView.Adapter<FilmListAdapter.ViewHolder>() {
                 .apply(requestOptions)
                 .into(binding.pic)
 
-            binding.root.setOnClickListener {
-                val intent = Intent(itemView.context, FilmDetailActivity::class.java)
-                intent.putExtra("object", film)
-                itemView.context.startActivity(intent)
+            if (!disableClick) {
+                binding.root.setOnClickListener {
+                    val intent = Intent(itemView.context, FilmDetailActivity::class.java)
+                    intent.putExtra("object", film)
+                    itemView.context.startActivity(intent)
+                }
+            } else {
+                binding.root.setOnClickListener(null)
             }
         }
     }

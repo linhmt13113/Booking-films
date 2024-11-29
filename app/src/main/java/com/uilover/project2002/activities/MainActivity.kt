@@ -11,17 +11,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.uilover.project2002.adapters.FilmListAdapter
 import com.uilover.project2002.adapters.SliderAdapter
 import com.uilover.project2002.data.model.Film
-import com.uilover.project2002.data.model.SliderItems
 import com.uilover.project2002.databinding.ActivityMainBinding
 import com.uilover.project2002.dialogs.AllFilmsDialog
 import com.uilover.project2002.viewmodels.MainViewModel
 import com.uilover.project2002.viewmodels.MainViewModelFactory
+import com.ismaeldivita.chipnavigation.ChipNavigationBar
+import com.uilover.project2002.R
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels { MainViewModelFactory(this) }
     private lateinit var filmListAdapter: FilmListAdapter
     private lateinit var sliderAdapter: SliderAdapter
+    private lateinit var upcomingFilmListAdapter: FilmListAdapter
+
+    private var filmsLoaded = false
 
     override fun onStart() {
         super.onStart()
@@ -38,12 +43,32 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
+        val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
+        navBar.setOnItemSelectedListener { id ->
+            when (id) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+//                R.id.nav_cart -> {
+//                    val intent = Intent(this, CartActivity::class.java)
+//                    startActivity(intent)
+//                }
+//                R.id.nav_profile -> {
+//                    val intent = Intent(this, ProfileActivity::class.java)
+//                    startActivity(intent)
+//                }
+            }
+        }
+
+
         mainViewModel.loggedInUserEmail.observe(this, { email ->
             if (email != null) {
                 binding.textView4.text = email
                 binding.textView3.text = "Hello ${email.split("@").firstOrNull()}"
             } else {
-                navigateToLogin()
+                navigateToIntro()
             }
         })
 
@@ -56,9 +81,10 @@ class MainActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupSliderRecyclerView()
+        setupUpcomingRecyclerView()
         observeViewModel()
         loadFilms()
-        loadTopMovies()
+        loadUpcomingMovies()
     }
 
     private fun setupRecyclerView() {
@@ -73,13 +99,20 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerViewSlider.adapter = sliderAdapter
     }
 
+    private fun setupUpcomingRecyclerView() {
+        upcomingFilmListAdapter = FilmListAdapter(disableClick = true)
+        binding.recyclerViewUpcoming.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerViewUpcoming.adapter = upcomingFilmListAdapter
+        upcomingFilmListAdapter.setOnItemClickListener(null)
+    }
+
     private fun observeViewModel() {
         mainViewModel.films.observe(this, { films ->
             if (films != null && films.isNotEmpty()) {
                 Log.d("MainActivity", "Films loaded: ${films.size}")
 
-                // Chỉ hiển thị 3 bộ phim đầu tiên
-                val limitedFilms = films.take(3)
+                val topMovies = films.filter { it.title in listOf("Inception", "Interstellar", "The Dark Knight") }
+                val limitedFilms = topMovies
                 filmListAdapter.submitList(limitedFilms)
 
                 binding.progressBarSlider.visibility = View.GONE
@@ -89,13 +122,22 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+
         mainViewModel.topMovies.observe(this, { topMovies ->
-            // Hiển thị topMovies tại nơi bạn muốn trong giao diện
-            // Ví dụ: bạn có thể thiết lập một RecyclerView khác để hiển thị topMovies
             Log.d("MainActivity", "Top Movies loaded: ${topMovies.size}")
         })
 
-        // Xử lý sự kiện nhấn "See All"
+        mainViewModel.upcomingMovies.observe(this, { upcomingMovies ->
+            if (upcomingMovies != null && upcomingMovies.isNotEmpty()) {
+                Log.d("MainActivity", "Upcoming Movies loaded: ${upcomingMovies.size}")
+                upcomingFilmListAdapter.submitList(upcomingMovies)
+            } else {
+                Log.d("MainActivity", "No Upcoming Movies available")
+            }
+        })
+
+
+
         binding.textView6.setOnClickListener {
             // Mở một dialog hoặc activity mới để hiển thị tất cả các bộ phim
             showAllFilmsDialog(mainViewModel.films.value ?: emptyList())
@@ -111,14 +153,8 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.loadFilms()
     }
 
-    private fun loadTopMovies() {
-        mainViewModel.loadTopMovies()
-    }
-
-    private fun navigateToLogin() {
-        val intent = Intent(applicationContext, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+    private fun loadUpcomingMovies() {
+        mainViewModel.loadUpcomingMovies()
     }
 
     private fun navigateToIntro() {
@@ -132,3 +168,8 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.closeDatabase()
     }
 }
+
+
+
+
+

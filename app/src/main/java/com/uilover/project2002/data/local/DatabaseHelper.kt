@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.uilover.project2002.data.model.Cast
 import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.data.model.SliderItems
 
@@ -18,40 +19,46 @@ class DatabaseHelper(context: Context) :
         const val TABLE_BANNERS = "banners"
         const val TABLE_TOP_MOVIES = "top_movies"
         const val TABLE_UPCOMING = "upcoming"
-        const val TABLE_USER = "user"
         const val TABLE_FILMS = "films"
+        const val TABLE_USER = "user"
         const val TABLE_SLIDER_ITEMS = "slider_items"
 
-        const val COLUMN_USER_ID = "id"
         const val COLUMN_ID = "id"
-        const val COLUMN_USER_EMAIL = "email"
         const val COLUMN_TITLE = "title"
-        const val COLUMN_IMAGE_URL = "image_url"
         const val COLUMN_DESCRIPTION = "description"
-        const val COLUMN_TIMESTAMP = "timestamp"
-        const val COLUMN_USER_PASSWORD = "password"
+        const val COLUMN_IMAGE_URL = "image_url"
         const val COLUMN_PRICE = "price"
+        const val COLUMN_TIME = "time"
+        const val COLUMN_TRAILER = "trailer"
+        const val COLUMN_IMDB = "imdb"
+        const val COLUMN_YEAR = "year"
+        const val COLUMN_RELEASE_DATE = "release_date"
+        const val COLUMN_GENRE = "genre"
+        const val COLUMN_CASTS = "casts"
+
+        const val COLUMN_USER_ID = "id"
+        const val COLUMN_USER_EMAIL = "email"
+        const val COLUMN_USER_PASSWORD = "password"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT, $COLUMN_USER_PASSWORD TEXT)")
-        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_BANNERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
-        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_TOP_MOVIES ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_PRICE REAL)")
-        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
-        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_FILMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_PRICE REAL)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_FILMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_PRICE REAL, $COLUMN_TIME TEXT, $COLUMN_TRAILER TEXT, $COLUMN_IMDB INTEGER, $COLUMN_YEAR INTEGER, $COLUMN_GENRE TEXT, $COLUMN_CASTS TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_TOP_MOVIES ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_RELEASE_DATE TEXT)")
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SLIDER_ITEMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_BANNERS")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_FILMS")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_TOP_MOVIES")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_UPCOMING")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_FILMS")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_SLIDER_ITEMS")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
         onCreate(db)
     }
 
-    fun insertUser(email: String, password: String) {
+    fun insertUser (email: String, password: String) {
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_USER_EMAIL, email)
@@ -80,7 +87,7 @@ class DatabaseHelper(context: Context) :
         return cursor.count > 0
     }
 
-    fun getLoggedInUser(): String? {
+    fun getLoggedInUser (): String? {
         val db = readableDatabase
         val cursor = db.query(
             TABLE_USER, arrayOf(COLUMN_USER_EMAIL),
@@ -94,7 +101,7 @@ class DatabaseHelper(context: Context) :
         }
     }
 
-    fun getUser(): Cursor {
+    fun getUser (): Cursor {
         val db = this.readableDatabase
         return db.query(
             TABLE_USER, arrayOf(COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD),
@@ -104,25 +111,35 @@ class DatabaseHelper(context: Context) :
 
     fun insertFilm(film: Film) {
         val db = writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_TITLE, film.title)
-            put(COLUMN_DESCRIPTION, film.description)
-            put(COLUMN_IMAGE_URL, film.poster)
-            put(COLUMN_PRICE, film.price)
+        if (!doesFilmExist(film.title)) {
+            val values = ContentValues().apply {
+                put(COLUMN_TITLE, film.title)
+                put(COLUMN_DESCRIPTION, film.description)
+                put(COLUMN_IMAGE_URL, film.poster)
+                put(COLUMN_PRICE, film.price)
+                put(COLUMN_TIME, film.time ?: "")
+                put(COLUMN_TRAILER, film.trailer ?: "")
+                put(COLUMN_IMDB, film.imdb)
+                put(COLUMN_YEAR, film.year)
+                put(COLUMN_GENRE, film.genre.filterNot { it.isNullOrEmpty() }.joinToString(","))
+                put(COLUMN_CASTS, film.casts.map { it.actor }.filterNot { it.isNullOrEmpty() }.joinToString(","))
+            }
+            db.insert(TABLE_FILMS, null, values)
         }
-        db.insert(TABLE_FILMS, null, values)
     }
 
-    fun insertTopMovie(film: Film) {
+    fun insertUpcomingMovie(film: Film) {
         val db = writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_TITLE, film.title)
-            put(COLUMN_DESCRIPTION, film.description)
-            put(COLUMN_IMAGE_URL, film.poster)
-            put(COLUMN_PRICE, film.price)
+        if (!doesUpcomingFilmExist(film.title)) {
+            val values = ContentValues().apply {
+                put(COLUMN_TITLE, film.title)
+                put(COLUMN_DESCRIPTION, film.description)
+                put(COLUMN_IMAGE_URL, film.poster)
+            }
+            db.insert(TABLE_UPCOMING, null, values)
         }
-        db.insert(TABLE_TOP_MOVIES, null, values)
     }
+
 
     fun getAllFilms(): List<Film> {
         val films = mutableListOf<Film>()
@@ -134,18 +151,24 @@ class DatabaseHelper(context: Context) :
                 val descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION)
                 val posterIndex = cursor.getColumnIndex(COLUMN_IMAGE_URL)
                 val priceIndex = cursor.getColumnIndex(COLUMN_PRICE)
+                val timeIndex = cursor.getColumnIndex(COLUMN_TIME)
+                val trailerIndex = cursor.getColumnIndex(COLUMN_TRAILER)
+                val imdbIndex = cursor.getColumnIndex(COLUMN_IMDB)
+                val yearIndex = cursor.getColumnIndex(COLUMN_YEAR)
+                val genreIndex = cursor.getColumnIndex(COLUMN_GENRE)
+                val castsIndex = cursor.getColumnIndex(COLUMN_CASTS)
 
                 val film = Film(
-                    title = if (titleIndex >= 0) cursor.getString(titleIndex) else "",
-                    description = if (descriptionIndex >= 0) cursor.getString(descriptionIndex) else "",
-                    poster = if (posterIndex >= 0) cursor.getString(posterIndex) else "",
-                    time = null,
-                    trailer = null,
-                    imdb = 0,
-                    year = 0,
+                    title = if (titleIndex >= 0) cursor.getString(titleIndex) ?: "" else "",
+                    description = if (descriptionIndex >= 0) cursor.getString(descriptionIndex) ?: "" else "",
+                    poster = if (posterIndex >= 0) cursor.getString(posterIndex) ?: "" else "",
+                    time = if (timeIndex >= 0) cursor.getString(timeIndex) else null,
+                    trailer = if (trailerIndex >= 0) cursor.getString(trailerIndex) else null,
+                    imdb = if (imdbIndex >= 0) cursor.getInt(imdbIndex) else 0,
+                    year = if (yearIndex >= 0) cursor.getInt(yearIndex) else 0,
                     price = if (priceIndex >= 0) cursor.getDouble(priceIndex) else 0.0,
-                    genre = arrayListOf(),
-                    casts = arrayListOf()
+                    genre = if (genreIndex >= 0) cursor.getString(genreIndex)?.split(",")?.filterNot { it.isNullOrEmpty() }?.toCollection(ArrayList()) ?: arrayListOf() else arrayListOf(),
+                    casts = if (castsIndex >= 0) cursor.getString(castsIndex)?.split(",")?.map { Cast(actor = it) }?.toCollection(ArrayList()) ?: arrayListOf() else arrayListOf()
                 )
                 films.add(film)
             } while (cursor.moveToNext())
@@ -154,44 +177,27 @@ class DatabaseHelper(context: Context) :
         return films
     }
 
-    fun getTopMovies(): List<Film> {
-        val topMovies = mutableListOf<Film>()
+    fun getUpcomingMovies(): List<Film> {
+        val upcomingMovies = mutableListOf<Film>()
         val db = readableDatabase
-        val cursor = db.query(TABLE_TOP_MOVIES, null, null, null, null, null, null)
+        val cursor = db.query(TABLE_UPCOMING, null, null, null, null, null, null)
         if (cursor.moveToFirst()) {
             do {
                 val titleIndex = cursor.getColumnIndex(COLUMN_TITLE)
                 val descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION)
                 val posterIndex = cursor.getColumnIndex(COLUMN_IMAGE_URL)
-                val priceIndex = cursor.getColumnIndex(COLUMN_PRICE)
 
                 val film = Film(
                     title = if (titleIndex >= 0) cursor.getString(titleIndex) else "",
                     description = if (descriptionIndex >= 0) cursor.getString(descriptionIndex) else "",
                     poster = if (posterIndex >= 0) cursor.getString(posterIndex) else "",
-                    time = null,
-                    trailer = null,
-                    imdb = 0,
-                    year = 0,
-                    price = if (priceIndex >= 0) cursor.getDouble(priceIndex) else 0.0,
-                    genre = arrayListOf(),
-                    casts = arrayListOf()
                 )
-                topMovies.add(film)
+                upcomingMovies.add(film)
             } while (cursor.moveToNext())
         }
         cursor.close()
-        return topMovies
+        return upcomingMovies
     }
-
-    fun insertUpcomingMovie(film: Film) {
-        val db = writableDatabase
-        val values = ContentValues().apply { put(COLUMN_TITLE, film.title)
-            put(COLUMN_DESCRIPTION, film.description)
-            put(COLUMN_IMAGE_URL, film.poster) }
-        db.insert(TABLE_UPCOMING, null, values)
-    }
-
 
     fun getSliderItems(): List<SliderItems> {
         val sliderItems = mutableListOf<SliderItems>()
@@ -215,4 +221,23 @@ class DatabaseHelper(context: Context) :
         cursor.close()
         return sliderItems
     }
+
+    fun doesFilmExist(title: String?): Boolean {
+        if (title == null) return false
+        val db = readableDatabase
+        val cursor = db.query(TABLE_FILMS, arrayOf(COLUMN_TITLE), "$COLUMN_TITLE = ?", arrayOf(title), null, null, null)
+        val exists = cursor.moveToFirst()
+        cursor.close()
+        return exists
+    }
+
+    fun doesUpcomingFilmExist(title: String?): Boolean {
+        if (title == null) return false
+        val db = readableDatabase
+        val cursor = db.query(TABLE_UPCOMING, arrayOf(COLUMN_TITLE), "$COLUMN_TITLE = ?", arrayOf(title), null, null, null)
+        val exists = cursor.moveToFirst()
+        cursor.close()
+        return exists
+    }
+
 }

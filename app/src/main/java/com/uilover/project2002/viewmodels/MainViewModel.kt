@@ -22,6 +22,9 @@ class MainViewModel(context: Context) : ViewModel() {
     private val _topMovies = MutableLiveData<List<Film>>()
     val topMovies: LiveData<List<Film>> get() = _topMovies
 
+    private val _upcomingMovies = MutableLiveData<List<Film>>()
+    val upcomingMovies: LiveData<List<Film>> get() = _upcomingMovies
+
     private val _sliderItems = MutableLiveData<List<SliderItems>>()
     val sliderItems: LiveData<List<SliderItems>> get() = _sliderItems
 
@@ -32,9 +35,7 @@ class MainViewModel(context: Context) : ViewModel() {
     }
 
     fun insertInitialData() {
-        mainRepository.insertBannerData()
-        mainRepository.insertTopMovies()
-        //mainRepository.insertUpcomingMovies()
+        mainRepository.insertUpcomingMovies()
         mainRepository.insertFilms()
     }
 
@@ -45,10 +46,10 @@ class MainViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun loadTopMovies() {
+    fun loadUpcomingMovies() {
         viewModelScope.launch {
-            val topMovies = mainRepository.getTopMovies()
-            _topMovies.postValue(topMovies)
+            val upcomingMovies = mainRepository.getUpcomingMovies()
+            _upcomingMovies.postValue(upcomingMovies)
         }
     }
 

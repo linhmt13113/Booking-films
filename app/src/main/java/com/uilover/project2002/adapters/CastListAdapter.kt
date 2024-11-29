@@ -14,8 +14,6 @@ class CastListAdapter(private val cast: ArrayList<Cast>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(cast: Cast) {
             Glide.with(itemView.context)
-                .load(cast.picUrl)
-                .into(binding.actorImage)
             binding.nameTxt.text = cast.actor
         }
     }
