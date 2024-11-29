@@ -1,6 +1,7 @@
 package com.uilover.project2002.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -68,6 +69,14 @@ class FilmDetailActivity : AppCompatActivity() {
             val intent = Intent(this, SeatListActivity::class.java)
             intent.putExtra("film", item)
             startActivity(intent)
+        }
+
+        binding.trailerLink.setOnClickListener {
+            val trailerUrl = item.trailer
+            if (trailerUrl != null) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))
+                startActivity(intent)
+            }
         }
 
         val radius = 10f

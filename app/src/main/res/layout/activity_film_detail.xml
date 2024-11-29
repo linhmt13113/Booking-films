@@ -74,21 +74,18 @@
                             android:textSize="30sp"
                             android:textStyle="bold" />
 
-                        <ImageView
-                            android:id="@+id/imageView6"
+                        <TextView
+                            android:id="@+id/trailerLink"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
+                            android:text="Trailer"
+                            android:textColor="@color/light_blue"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
                             android:layout_marginEnd="16dp"
-                            app:srcCompat="@drawable/share" />
-
-                        <ImageView
-                            android:id="@+id/imageView5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            app:srcCompat="@drawable/bookmark" />
-
+                            android:clickable="true"
+                            android:focusable="true" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -133,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Summery"
+                        android:text="Summary"
                         android:textColor="@color/white"
                         android:textStyle="bold" />
 
