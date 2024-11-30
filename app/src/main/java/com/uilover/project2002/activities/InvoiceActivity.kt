@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uilover.project2002.data.local.DatabaseHelper
 import com.uilover.project2002.data.model.Invoice
+import com.uilover.project2002.data.model.Seat
 import com.uilover.project2002.databinding.ActivityInvoiceBinding
 
 class InvoiceActivity : AppCompatActivity() {
@@ -38,6 +39,7 @@ class InvoiceActivity : AppCompatActivity() {
         binding.barcode.text = "Barcode: $barcode"
 
         // Lưu hóa đơn khi người dùng nhấn nút Confirm
+        // Quay về MainActivity
         binding.buttonConfirm.setOnClickListener {
             val invoice = Invoice(
                 filmTitle = filmTitle ?: "",
@@ -51,6 +53,22 @@ class InvoiceActivity : AppCompatActivity() {
             )
             dbHelper.insertInvoice(invoice)
             Toast.makeText(this, "Invoice saved successfully", Toast.LENGTH_SHORT).show()
+
+            // Lưu ghế đã đặt vào cơ sở dữ liệu
+            val bookedSeats = seats?.split(",") ?: listOf()
+            for (seat in bookedSeats) {
+                // Cập nhật để truyền đúng các tham số vào hàm khởi tạo Seat
+                val seatToInsert = Seat(
+                    status = Seat.SeatStatus.UNAVAILABLE, // Đặt trạng thái ghế là UNAVAILABLE vì nó đã được đặt
+                    name = seat,
+                    filmTitle = filmTitle ?: "",
+                    showDate = showDate ?: "",
+                    showTime = showTime ?: "",
+                    isBooked = true // Đánh dấu ghế là đã đặt
+                )
+                dbHelper.insertSeat(seatToInsert) // Thêm ghế vào cơ sở dữ liệu
+            }
+
             // Quay về MainActivity
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

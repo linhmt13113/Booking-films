@@ -4,8 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.uilover.project2002.data.local.DatabaseHelper
 import com.uilover.project2002.databinding.ActivityIntroBinding
 import com.uilover.project2002.repositories.MainRepository
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class IntroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIntroBinding
@@ -17,7 +21,6 @@ class IntroActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mainRepository = MainRepository(this)
-
         // Thêm dữ liệu phim khi khởi động ứng dụng
         addDataFromCode()
 

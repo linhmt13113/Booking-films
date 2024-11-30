@@ -17,6 +17,7 @@ import com.uilover.project2002.viewmodels.MainViewModel
 import com.uilover.project2002.viewmodels.MainViewModelFactory
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.uilover.project2002.R
+import com.uilover.project2002.data.local.DatabaseHelper
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,8 +26,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filmListAdapter: FilmListAdapter
     private lateinit var sliderAdapter: SliderAdapter
     private lateinit var upcomingFilmListAdapter: FilmListAdapter
-
-    private var filmsLoaded = false
 
     override fun onStart() {
         super.onStart()
@@ -68,13 +67,13 @@ class MainActivity : AppCompatActivity() {
                 binding.textView4.text = email
                 binding.textView3.text = "Hello ${email.split("@").firstOrNull()}"
             } else {
-                navigateToIntro()
+                navigateToLogin()
             }
         })
 
         binding.logout.setOnClickListener {
             mainViewModel.logout()
-            navigateToIntro()
+            navigateToLogin()
         }
 
         mainViewModel.insertInitialData()
@@ -157,8 +156,8 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.loadUpcomingMovies()
     }
 
-    private fun navigateToIntro() {
-        val intent = Intent(applicationContext, IntroActivity::class.java)
+    private fun navigateToLogin() {
+        val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }

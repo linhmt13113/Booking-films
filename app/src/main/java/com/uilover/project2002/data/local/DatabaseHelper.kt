@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.uilover.project2002.data.model.Cast
 import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.data.model.Invoice
+import com.uilover.project2002.data.model.Seat
 import com.uilover.project2002.data.model.SliderItems
 import org.mindrot.jbcrypt.BCrypt
 
@@ -49,6 +50,11 @@ class DatabaseHelper(context: Context) :
         const val COLUMN_TOTAL_PRICE = "total_price"
         const val COLUMN_BARCODE = "barcode"
         const val COLUMN_TIMESTAMP = "timestamp"
+
+        const val TABLE_SEATS = "seats"
+        const val COLUMN_SEAT_ID = "id"
+        const val COLUMN_SEAT_NUMBER = "seat_number"
+        const val COLUMN_IS_BOOKED = "is_booked"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -57,6 +63,7 @@ class DatabaseHelper(context: Context) :
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_RELEASE_DATE TEXT)")
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SLIDER_ITEMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_INVOICES ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_TITLE TEXT, $COLUMN_SHOW_DATE TEXT, $COLUMN_SHOW_TIME TEXT, $COLUMN_SEATS TEXT, $COLUMN_CINEMA_HALL INTEGER, $COLUMN_TOTAL_PRICE REAL, $COLUMN_USER_EMAIL TEXT, $COLUMN_BARCODE TEXT, $COLUMN_TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SEATS ($COLUMN_SEAT_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_TITLE TEXT, $COLUMN_SHOW_DATE TEXT, $COLUMN_SHOW_TIME TEXT, $COLUMN_SEAT_NUMBER TEXT, $COLUMN_IS_BOOKED INTEGER)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -320,10 +327,48 @@ class DatabaseHelper(context: Context) :
         )
     }
 
-    private fun hashPassword(password: String): String {
-        return BCrypt.hashpw(password, BCrypt.gensalt())
+    fun insertSeat(seat: Seat) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_TITLE, seat.filmTitle)
+            put(COLUMN_SHOW_DATE, seat.showDate)
+            put(COLUMN_SHOW_TIME, seat.showTime)
+            put(COLUMN_SEAT_NUMBER, seat.name)
+            put(COLUMN_IS_BOOKED, if (seat.isBooked) 1 else 0)
+        }
+        db.insert(TABLE_SEATS, null, values)
+    }
+
+    fun getBookedSeats(filmTitle: String, showDate: String, showTime: String): List<String> {
+        val bookedSeats = mutableListOf<String>()
+        val db = readableDatabase
+        val cursor: Cursor = db.query(
+            TABLE_SEATS,
+            arrayOf(COLUMN_SEAT_NUMBER),
+            "$COLUMN_TITLE = ? AND $COLUMN_SHOW_DATE = ? AND $COLUMN_SHOW_TIME = ? AND $COLUMN_IS_BOOKED = 1",
+            arrayOf(filmTitle, showDate, showTime),
+            null,
+            null,
+            null
+        )
+        if (cursor.moveToFirst()) {
+            do {
+                val seatNumberIndex = cursor.getColumnIndex(COLUMN_SEAT_NUMBER)
+                if (seatNumberIndex >= 0) {
+                    val seatNumber = cursor.getString(seatNumberIndex)
+                    bookedSeats.add(seatNumber)
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return bookedSeats
     }
 }
+
+
+
+
+
 
 
 

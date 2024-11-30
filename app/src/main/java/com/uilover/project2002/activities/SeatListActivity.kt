@@ -14,42 +14,39 @@ import com.uilover.project2002.adapters.SeatListAdapter
 import com.uilover.project2002.adapters.TimeAdapter
 import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.data.model.Seat
+import com.uilover.project2002.data.local.DatabaseHelper // Đảm bảo bạn đã import DatabaseHelper
 import com.uilover.project2002.databinding.ActivitySeatListBinding
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Month
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
-import kotlin.random.Random
 import java.util.Locale
 
 class SeatListActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySeatListBinding
     private lateinit var film: Film
+    private lateinit var dbHelper: DatabaseHelper // Khai báo dbHelper
     private var price: Double = 0.0
     private var number: Int = 0
     private var selectedDate: LocalDate? = null
     private var selectedTime: LocalTime? = null
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySeatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        dbHelper = DatabaseHelper(this) // Khởi tạo dbHelper
+
         try {
             getIntentExtra()
             setVariable()
             initDateAndTimePickers()
-
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
-        } catch (e: Exception) {
-            Log.e("SeatListActivity", "Error initializing activity", e)
-        }
+        } catch (e: Exception) {}
 
         binding.button.setOnClickListener {
             val seats = (binding.seatRecyclerview.adapter as SeatListAdapter).getSelectedSeats()
@@ -60,14 +57,11 @@ class SeatListActivity : AppCompatActivity() {
                     putExtra("showDate", selectedDate.toString())
                     putExtra("showTime", selectedTime.toString())
                     putExtra("seats", seats.joinToString(","))
-                    putExtra("cinemaHall", 1) // Example: cinema hall based on film ID
+                    putExtra("cinemaHall", 1)
                     putExtra("totalPrice", price)
                     putExtra("email", email)
                 }
                 startActivity(intent)
-            } else {
-                // Hiển thị thông báo lỗi nếu người dùng chưa chọn đầy đủ thông tin
-                Log.e("SeatListActivity", "Missing information: Date, Time, or Seats not selected")
             }
         }
     }
@@ -88,24 +82,19 @@ class SeatListActivity : AppCompatActivity() {
                 selectedDate = parsedDate
                 updateAvailableTimeSlots(parsedDate)
                 binding.TimeRecyclerview.visibility = View.VISIBLE
-                binding.seatRecyclerview.visibility = View.GONE  // Hide the seat list when a new date is selected
-            } catch (e: Exception) {
-                Log.e("SeatListActivity", "Error parsing date: $dateStr", e)
-            }
+                binding.seatRecyclerview.visibility = View.GONE
+            } catch (e: Exception) {}
         }
 
-        // Initial visibility settings
         binding.TimeRecyclerview.visibility = View.GONE
         binding.seatRecyclerview.visibility = View.GONE
     }
 
     private fun parseDateString(dateString: String): LocalDate {
         val parts = dateString.split("/")
-        val dayOfWeek = parts[0]
         val dayOfMonth = parts[1].toInt()
         val monthAbbreviation = parts[2].toUpperCase(Locale.ENGLISH)
 
-        // Map three-letter month abbreviation to Month enum
         val month = when (monthAbbreviation) {
             "JAN" -> Month.JANUARY
             "FEB" -> Month.FEBRUARY
@@ -132,37 +121,30 @@ class SeatListActivity : AppCompatActivity() {
         for (i in 0 until 7) {
             dates.add(today.plusDays(i.toLong()))
         }
-        Log.d("SeatListActivity", "Generated Dates: $dates")
         return dates
     }
-
-
 
     private fun updateAvailableTimeSlots(date: LocalDate) {
         val timeSlots = generateTimeSlots()
         val currentTime = LocalTime.now()
-
-        // Filter out past times only if the selected date is today
         val upcomingTimeSlots = mutableListOf<String>()
+
         if (date.isEqual(LocalDate.now())) {
             for (time in timeSlots) {
                 val localTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH))
-                if (localTime.isAfter(currentTime.plusMinutes(30))) {
+                if (localTime.isAfter(currentTime.minusMinutes(30))) {
                     upcomingTimeSlots.add(time)
                 }
             }
         } else {
-            // For future dates, include all time slots
             upcomingTimeSlots.addAll(timeSlots)
         }
-
-        Log.d("SeatListActivity", "Upcoming Time Slots for $date: $upcomingTimeSlots")
 
         binding.TimeRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.TimeRecyclerview.adapter = TimeAdapter(upcomingTimeSlots) {
             selectedTime = LocalTime.parse(it, DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH))
             updateSeatsList()
-            binding.seatRecyclerview.visibility = View.VISIBLE // Show the seat list when a time slot is selected
+            binding.seatRecyclerview.visibility = View.VISIBLE
         }
     }
 
@@ -188,9 +170,7 @@ class SeatListActivity : AppCompatActivity() {
             })
             binding.seatRecyclerview.adapter = seatAdapter
             binding.seatRecyclerview.isNestedScrollingEnabled = false
-        } catch (e: Exception) {
-            Log.e("SeatListActivity", "Error updating seats list", e)
-        }
+        } catch (e: Exception) {}
     }
 
     private fun setVariable() {
@@ -205,53 +185,44 @@ class SeatListActivity : AppCompatActivity() {
 
     private fun generateTimeSlots(): List<String> {
         val timeSlots = mutableListOf<String>()
-        val start = LocalTime.of(10, 0) // 10:00 AM
-        val end = LocalTime.of(23, 59) // 11:59 PM
+        val start = LocalTime.of(10, 0)
+        val end = LocalTime.of(23, 59)
         var time = start
 
-        // Limit the number of time slots to avoid OOM
-        while (time.isBefore(end) && timeSlots.size < 10) { // Ensure no more than 10 slots
+        while (time.isBefore(end) && timeSlots.size < 10) {
             timeSlots.add(time.format(DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH)))
             time = time.plusHours(2)
         }
-
-        Log.d("SeatListActivity", "Generated Time Slots: $timeSlots")
 
         return timeSlots
     }
 
     private fun generateSeats(): List<Seat> {
         val seatList = mutableListOf<Seat>()
-        val numberSeats = 96 // 12 rows and 8 columns = 96 seats
+        val numberSeats = 96
 
         if (selectedDate != null && selectedTime != null) {
-            val currentTime = LocalTime.now()
+            val filmTitle = film.title ?: return seatList
+            val dateString = selectedDate?.toString() ?: return seatList
+            val timeString = selectedTime?.toString() ?: return seatList
+
+            // Lấy danh sách ghế đã đặt từ cơ sở dữ liệu
+            val bookedSeats = dbHelper.getBookedSeats(filmTitle, dateString, timeString)
+
+            Log.d("SeatListActivity", "Booked seats: $bookedSeats")
 
             for (i in 0 until numberSeats) {
                 val row = 'A' + (i / 8)
                 val seatName = "$row${i % 8 + 1}"
-                val seatStatus = when {
-                    // Nearest two days with some seats booked in pairs
-                    selectedDate!!.isEqual(LocalDate.now()) || selectedDate!!.isEqual(LocalDate.now().plusDays(1)) -> {
-                        if (i % 8 < 7 && Random.nextBoolean()) {
-                            Seat.SeatStatus.UNAVAILABLE
-                        } else {
-                            Seat.SeatStatus.AVAILABLE
-                        }
-                    }
-                    // Showtimes that have passed by more than 30 minutes are sold out
-                    selectedDate!!.isEqual(LocalDate.now()) && selectedTime!!.plusMinutes(30).isBefore(currentTime) -> {
-                        Seat.SeatStatus.UNAVAILABLE
-                    }
-                    // Future dates with all seats available
-                    else -> Seat.SeatStatus.AVAILABLE
+                val seatStatus = if (bookedSeats.contains(seatName)) {
+                    Seat.SeatStatus.UNAVAILABLE // Nếu ghế đã được đặt
+                } else {
+                    Seat.SeatStatus.AVAILABLE // Nếu ghế còn trống
                 }
                 seatList.add(Seat(seatStatus, seatName))
             }
         }
-
-        Log.d("SeatListActivity", "Generated Seats: $seatList")
-
+        Log.d("SeatListActivity", "Generated seats: $seatList")
         return seatList
     }
 }
