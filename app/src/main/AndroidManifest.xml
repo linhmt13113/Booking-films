@@ -58,6 +58,12 @@
             android:exported="false" />
 
         <activity
+            android:name=".activities.ProfileActivity"
+            android:theme="@style/Theme.Material3.Light.NoActionBar"
+            android:exported="false" />
+
+
+        <activity
             android:name=".activities.CartActivity"
             android:theme="@style/Theme.Project"
             android:exported="false" />

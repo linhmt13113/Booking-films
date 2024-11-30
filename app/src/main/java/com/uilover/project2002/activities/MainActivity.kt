@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.lifecycleScope
+import com.ismaeldivita.chipnavigation.ChipNavigationBar
+import com.uilover.project2002.R
 import com.uilover.project2002.adapters.FilmListAdapter
 import com.uilover.project2002.adapters.SliderAdapter
 import com.uilover.project2002.data.model.Film
@@ -15,10 +19,7 @@ import com.uilover.project2002.databinding.ActivityMainBinding
 import com.uilover.project2002.dialogs.AllFilmsDialog
 import com.uilover.project2002.viewmodels.MainViewModel
 import com.uilover.project2002.viewmodels.MainViewModelFactory
-import com.ismaeldivita.chipnavigation.ChipNavigationBar
-import com.uilover.project2002.R
-import com.uilover.project2002.data.local.DatabaseHelper
-
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -46,35 +47,29 @@ class MainActivity : AppCompatActivity() {
         navBar.setOnItemSelectedListener { id ->
             when (id) {
                 R.id.nav_home -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    Toast.makeText(this, "You are already in Home", Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_cart -> {
                     val intent = Intent(this, CartActivity::class.java)
                     startActivity(intent)
                 }
-//                R.id.nav_profile -> {
-//                    val intent = Intent(this, ProfileActivity::class.java)
-//                    startActivity(intent)
-//                }
+                R.id.nav_profile -> {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
 
-
-        mainViewModel.loggedInUserEmail.observe(this, { email ->
+        mainViewModel.loggedInUserEmail.observe(this, { email->
             if (email != null) {
-                binding.textView4.text = email
-                binding.textView3.text = "Hello ${email.split("@").firstOrNull()}"
+                lifecycleScope.launch {
+                    val user = mainViewModel.getUserByEmail(email)
+                    binding.textView3.text = "Hello ${user?.username ?: "User"}"
+                }
             } else {
-                navigateToLogin()
+                navigateToIntro()
             }
         })
-
-        binding.logout.setOnClickListener {
-            mainViewModel.logout()
-            navigateToLogin()
-        }
 
         mainViewModel.insertInitialData()
 
@@ -121,7 +116,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
         mainViewModel.topMovies.observe(this, { topMovies ->
             Log.d("MainActivity", "Top Movies loaded: ${topMovies.size}")
         })
@@ -134,8 +128,6 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "No Upcoming Movies available")
             }
         })
-
-
 
         binding.textView6.setOnClickListener {
             // Mở một dialog hoặc activity mới để hiển thị tất cả các bộ phim
@@ -156,8 +148,8 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.loadUpcomingMovies()
     }
 
-    private fun navigateToLogin() {
-        val intent = Intent(applicationContext, LoginActivity::class.java)
+    private fun navigateToIntro() {
+        val intent = Intent(applicationContext, IntroActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -167,8 +159,3 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.closeDatabase()
     }
 }
-
-
-
-
-

@@ -10,6 +10,7 @@ import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.data.model.Invoice
 import com.uilover.project2002.data.model.Seat
 import com.uilover.project2002.data.model.SliderItems
+import com.uilover.project2002.data.model.User
 import org.mindrot.jbcrypt.BCrypt
 
 class DatabaseHelper(context: Context) :
@@ -124,11 +125,10 @@ class DatabaseHelper(context: Context) :
 
     fun insertUser(username: String, email: String, password: String) {
         val db = writableDatabase
-        val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
         val values = ContentValues().apply {
             put(COLUMN_USERNAME, username)
             put(COLUMN_USER_EMAIL, email)
-            put(COLUMN_USER_PASSWORD, hashedPassword)
+            put(COLUMN_USER_PASSWORD, password)
         }
         db.insert(TABLE_USER, null, values)
     }
@@ -140,19 +140,20 @@ class DatabaseHelper(context: Context) :
             "$COLUMN_USER_EMAIL = ?", arrayOf(email),
             null, null, null
         )
-        if (cursor.moveToFirst()) {
+        return if (cursor.moveToFirst()) {
             val passwordIndex = cursor.getColumnIndex(COLUMN_USER_PASSWORD)
             if (passwordIndex >= 0) {
                 val storedHash = cursor.getString(passwordIndex)
                 cursor.close()
-                return BCrypt.checkpw(password, storedHash)
+                BCrypt.checkpw(password, storedHash)
             } else {
                 cursor.close()
-                return false
+                false
             }
+        } else {
+            cursor.close()
+            false
         }
-        cursor.close()
-        return false
     }
 
     fun checkUserExists(email: String): Boolean {
@@ -165,26 +166,35 @@ class DatabaseHelper(context: Context) :
         return cursor.count > 0
     }
 
-    fun getLoggedInUser (): String? {
+    fun getUserByEmail(email: String?): User? {
         val db = readableDatabase
-        val cursor = db.query(
-            TABLE_USER, arrayOf(COLUMN_USER_EMAIL),
-            null, null, null, null, null
-        )
-        val columnIndex = cursor.getColumnIndex(COLUMN_USER_EMAIL)
-        return if (cursor.moveToFirst() && columnIndex >= 0) {
-            cursor.getString(columnIndex)
+        val cursor: Cursor = db.query(TABLE_USER, null, "$COLUMN_USER_EMAIL = ?", arrayOf(email), null, null, null)
+        return if (cursor.moveToFirst()) {
+            val usernameIndex = cursor.getColumnIndex(COLUMN_USERNAME)
+            val passwordIndex = cursor.getColumnIndex(COLUMN_USER_PASSWORD)
+
+            if (usernameIndex >= 0 && passwordIndex >= 0) {
+                val username = cursor.getString(usernameIndex)
+                val password = cursor.getString(passwordIndex)
+                cursor.close()
+                User(email!!, username, password)
+            } else {
+                cursor.close()
+                null
+            }
         } else {
+            cursor.close()
             null
         }
     }
 
-    fun getUser (): Cursor {
-        val db = this.readableDatabase
-        return db.query(
-            TABLE_USER, arrayOf(COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD),
-            null, null, null, null, null
-        )
+    fun updateUserPassword(email: String, newPassword: String) {
+        val db = writableDatabase
+        val hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        val values = ContentValues().apply {
+            put(COLUMN_USER_PASSWORD, hashedNewPassword)
+        }
+        db.update(TABLE_USER, values, "$COLUMN_USER_EMAIL = ?", arrayOf(email))
     }
 
     fun insertFilm(film: Film) {

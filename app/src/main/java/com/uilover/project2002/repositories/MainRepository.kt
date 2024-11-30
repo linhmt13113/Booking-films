@@ -1,11 +1,10 @@
 package com.uilover.project2002.repositories
 
-import android.content.ContentValues
 import android.content.Context
 import com.uilover.project2002.data.local.DatabaseHelper
 import com.uilover.project2002.data.model.Cast
 import com.uilover.project2002.data.model.Film
-import com.uilover.project2002.data.model.SliderItems
+import com.uilover.project2002.data.model.User
 
 class MainRepository(val context: Context) {
     private val dbHelper = DatabaseHelper(context)
@@ -106,8 +105,8 @@ class MainRepository(val context: Context) {
         }
     }
 
-    fun getSliderItems(): List<SliderItems> {
-        return dbHelper.getSliderItems()
+    fun getUserByEmail(email: String): User? {
+        return dbHelper.getUserByEmail(email)
     }
 
     fun getAllFilms(): List<Film> {

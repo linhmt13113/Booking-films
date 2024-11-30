@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uilover.project2002.data.model.Film
-import com.uilover.project2002.data.model.SliderItems
+import com.uilover.project2002.data.model.User
 import com.uilover.project2002.repositories.MainRepository
 import kotlinx.coroutines.launch
 
@@ -25,13 +25,14 @@ class MainViewModel(context: Context) : ViewModel() {
     private val _upcomingMovies = MutableLiveData<List<Film>>()
     val upcomingMovies: LiveData<List<Film>> get() = _upcomingMovies
 
-    private val _sliderItems = MutableLiveData<List<SliderItems>>()
-    val sliderItems: LiveData<List<SliderItems>> get() = _sliderItems
-
     fun updateUIWithEmail() {
         val sharedPreferences = mainRepository.context.getSharedPreferences("user_pref", Context.MODE_PRIVATE)
         val email = sharedPreferences.getString("logged_in_email", null)
         _loggedInUserEmail.postValue(email)
+    }
+
+    fun getUserByEmail(email: String): User? {
+        return mainRepository.getUserByEmail(email)
     }
 
     fun insertInitialData() {
@@ -51,19 +52,6 @@ class MainViewModel(context: Context) : ViewModel() {
             val upcomingMovies = mainRepository.getUpcomingMovies()
             _upcomingMovies.postValue(upcomingMovies)
         }
-    }
-
-    fun loadSliderItems() {
-        viewModelScope.launch {
-            val sliderItems = mainRepository.getSliderItems()
-            _sliderItems.postValue(sliderItems)
-        }
-    }
-
-    fun logout() {
-        val sharedPreferences = mainRepository.context.getSharedPreferences("user_pref", Context.MODE_PRIVATE)
-        sharedPreferences.edit().remove("logged_in_email").apply()
-        _loggedInUserEmail.postValue(null)
     }
 
     fun closeDatabase() {

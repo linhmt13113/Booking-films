@@ -1,0 +1,102 @@
+package com.uilover.project2002.activities
+
+import android.content.Intent
+import android.os.Bundle
+import android.text.TextUtils
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.ismaeldivita.chipnavigation.ChipNavigationBar
+import com.uilover.project2002.R
+import com.uilover.project2002.data.local.DatabaseHelper
+import com.uilover.project2002.databinding.ActivityProfileBinding
+import org.mindrot.jbcrypt.BCrypt
+
+class ProfileActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityProfileBinding
+    private lateinit var dbHelper: DatabaseHelper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        dbHelper = DatabaseHelper(this)
+
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        val email = sharedPreferences.getString("logged_in_email", null)
+
+        if (email != null) {
+            val user = dbHelper.getUserByEmail(email)
+            if (user != null) {
+                binding.tvEmail.text = "Email: ${user.email}"
+                binding.tvUsername.text = "Username: ${user.username}"
+
+                binding.btnChangePassword.setOnClickListener {
+                    val oldPassword = binding.etOldPassword.text.toString().trim()
+                    val newPassword = binding.etNewPassword.text.toString().trim()
+                    val newPasswordConfirm = binding.etNewPasswordConfirm.text.toString().trim()
+
+                    if (validateInputs(oldPassword, newPassword, newPasswordConfirm)) {
+                        changePassword(user.email, oldPassword, newPassword)
+                    }
+                }
+            }
+        }
+
+        binding.btnLogout.setOnClickListener {
+            logout()
+        }
+
+        val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
+        navBar.setOnItemSelectedListener { id ->
+            when (id) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                R.id.nav_cart -> {
+                    val intent = Intent(this, CartActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                R.id.nav_profile -> {
+                    Toast.makeText(this, "You are already in Profile", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun validateInputs(oldPassword: String, newPassword: String, newPasswordConfirm: String): Boolean {
+        if (TextUtils.isEmpty(oldPassword) || TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(newPasswordConfirm)) {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (newPassword != newPasswordConfirm) {
+            Toast.makeText(this, "New passwords do not match", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
+    private fun changePassword(email: String, oldPassword: String, newPassword: String) {
+        val user = dbHelper.getUserByEmail(email)
+
+        if (user != null && BCrypt.checkpw(oldPassword, user.password)) {
+            dbHelper.updateUserPassword(email, newPassword)
+            Toast.makeText(this, "Password changed successfully", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Old password is incorrect", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun logout() {
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
+        val intent = Intent(this, IntroActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+}

@@ -12,7 +12,8 @@ class RegisterRepository(context: Context) {
     }
 
     fun insertUser(username: String, email: String, password: String) {
-        dbHelper.insertUser(username, email, password)
+        val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
+        dbHelper.insertUser(username, email, hashedPassword)
     }
 
     fun closeDatabase() {

@@ -72,10 +72,10 @@ class CartActivity : AppCompatActivity() {
                 R.id.nav_cart -> {
                     Toast.makeText(this, "You are already in Cart", Toast.LENGTH_SHORT).show()
                 }
-                // R.id.nav_profile -> {
-                //     val intent = Intent(this, ProfileActivity::class.java)
-                //     startActivity(intent)
-                // }
+                 R.id.nav_profile -> {
+                     val intent = Intent(this, ProfileActivity::class.java)
+                     startActivity(intent)
+                 }
             }
         }
     }
