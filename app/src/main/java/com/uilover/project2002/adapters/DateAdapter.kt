@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.uilover.project2002.R
 import com.uilover.project2002.databinding.ItemDateBinding
 
-class DateAdapter(private val timeSlots: List<String>) :
-    RecyclerView.Adapter<DateAdapter.TimeViewHolder>() {
+class DateAdapter(private val dates: List<String>, private val clickListener: (String) -> Unit) :
+    RecyclerView.Adapter<DateAdapter.DateViewHolder>() {
     private var selectedPosition = -1
     private var lastSelectedPosition = -1
 
-    inner class TimeViewHolder(private val binding: ItemDateBinding) :
+    inner class DateViewHolder(private val binding: ItemDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(date: String) {
@@ -38,14 +38,15 @@ class DateAdapter(private val timeSlots: List<String>) :
                         selectedPosition = position
                         notifyItemChanged(lastSelectedPosition)
                         notifyItemChanged(selectedPosition)
+                        clickListener(date)
                     }
                 }
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeViewHolder {
-        return TimeViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateViewHolder {
+        return DateViewHolder(
             ItemDateBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -54,9 +55,9 @@ class DateAdapter(private val timeSlots: List<String>) :
         )
     }
 
-    override fun onBindViewHolder(holder: TimeViewHolder, position: Int) {
-        holder.bind(timeSlots[position])
+    override fun onBindViewHolder(holder: DateViewHolder, position: Int) {
+        holder.bind(dates[position])
     }
 
-    override fun getItemCount(): Int = timeSlots.size
+    override fun getItemCount(): Int = dates.size
 }
