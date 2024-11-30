@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -50,6 +51,10 @@ class InvoiceActivity : AppCompatActivity() {
             )
             dbHelper.insertInvoice(invoice)
             Toast.makeText(this, "Invoice saved successfully", Toast.LENGTH_SHORT).show()
+            // Quay về MainActivity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

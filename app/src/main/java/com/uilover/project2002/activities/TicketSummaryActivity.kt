@@ -40,5 +40,11 @@ class TicketSummaryActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
+
+        binding.buttonCancel.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish() // Kết thúc activity hiện tại để người dùng không thể quay lại bằng nút back
+        }
     }
 }

@@ -101,7 +101,7 @@ class RegisterActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
             if (success) {
                 showToast("Account created successfully")
-                navigateToMain()
+                navigateToLogin()
             } else {
                 showToast("User already exists")
             }
@@ -110,6 +110,12 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun navigateToMain() {
         val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToLogin() {
+        val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
