@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    implementation("org.mindrot:jbcrypt:0.4")
+
 
 
 

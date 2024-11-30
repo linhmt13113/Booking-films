@@ -9,6 +9,7 @@ import com.uilover.project2002.data.model.Cast
 import com.uilover.project2002.data.model.Film
 import com.uilover.project2002.data.model.Invoice
 import com.uilover.project2002.data.model.SliderItems
+import org.mindrot.jbcrypt.BCrypt
 
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -114,12 +115,13 @@ class DatabaseHelper(context: Context) :
         return invoices
     }
 
-    fun insertUser (username: String, email: String, password: String) {
+    fun insertUser(username: String, email: String, password: String) {
         val db = writableDatabase
+        val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
         val values = ContentValues().apply {
             put(COLUMN_USERNAME, username)
             put(COLUMN_USER_EMAIL, email)
-            put(COLUMN_USER_PASSWORD, password)
+            put(COLUMN_USER_PASSWORD, hashedPassword)
         }
         db.insert(TABLE_USER, null, values)
     }
@@ -128,10 +130,22 @@ class DatabaseHelper(context: Context) :
         val db = readableDatabase
         val cursor: Cursor = db.query(
             TABLE_USER, null,
-            "$COLUMN_USER_EMAIL = ? AND $COLUMN_USER_PASSWORD = ?", arrayOf(email, password),
+            "$COLUMN_USER_EMAIL = ?", arrayOf(email),
             null, null, null
         )
-        return cursor.count > 0
+        if (cursor.moveToFirst()) {
+            val passwordIndex = cursor.getColumnIndex(COLUMN_USER_PASSWORD)
+            if (passwordIndex >= 0) {
+                val storedHash = cursor.getString(passwordIndex)
+                cursor.close()
+                return BCrypt.checkpw(password, storedHash)
+            } else {
+                cursor.close()
+                return false
+            }
+        }
+        cursor.close()
+        return false
     }
 
     fun checkUserExists(email: String): Boolean {
@@ -305,6 +319,11 @@ class DatabaseHelper(context: Context) :
             arrayOf(invoice.filmTitle, invoice.showDate, invoice.showTime, invoice.email)
         )
     }
+
+    private fun hashPassword(password: String): String {
+        return BCrypt.hashpw(password, BCrypt.gensalt())
+    }
 }
+
 
 
