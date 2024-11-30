@@ -15,9 +15,7 @@
         android:layout_width="300sp"
         android:layout_height="160sp"
         android:scaleType="centerCrop"
-        android:src="@drawable/theme_title"
-
-        />
+        android:src="@drawable/theme_title" />
 
     <TextView
         android:text="@string/register"

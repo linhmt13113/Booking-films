@@ -51,10 +51,10 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-//                R.id.nav_cart -> {
-//                    val intent = Intent(this, CartActivity::class.java)
-//                    startActivity(intent)
-//                }
+                R.id.nav_cart -> {
+                    val intent = Intent(this, CartActivity::class.java)
+                    startActivity(intent)
+                }
 //                R.id.nav_profile -> {
 //                    val intent = Intent(this, ProfileActivity::class.java)
 //                    startActivity(intent)

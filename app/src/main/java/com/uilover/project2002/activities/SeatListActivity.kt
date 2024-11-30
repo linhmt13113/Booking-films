@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.content.Intent
 import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,8 @@ class SeatListActivity : AppCompatActivity() {
     private var selectedDate: LocalDate? = null
     private var selectedTime: LocalTime? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySeatListBinding.inflate(layoutInflater)
@@ -47,6 +50,31 @@ class SeatListActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("SeatListActivity", "Error initializing activity", e)
         }
+
+        binding.button.setOnClickListener {
+            val seats = (binding.seatRecyclerview.adapter as SeatListAdapter).getSelectedSeats()
+            if (selectedDate != null && selectedTime != null && seats.isNotEmpty()) {
+                val email = getEmailFromSharedPreferences()
+                val intent = Intent(this, TicketSummaryActivity::class.java).apply {
+                    putExtra("filmTitle", film.title)
+                    putExtra("showDate", selectedDate.toString())
+                    putExtra("showTime", selectedTime.toString())
+                    putExtra("seats", seats.joinToString(","))
+                    putExtra("cinemaHall", 1) // Example: cinema hall based on film ID
+                    putExtra("totalPrice", price)
+                    putExtra("email", email)
+                }
+                startActivity(intent)
+            } else {
+                // Hiển thị thông báo lỗi nếu người dùng chưa chọn đầy đủ thông tin
+                Log.e("SeatListActivity", "Missing information: Date, Time, or Seats not selected")
+            }
+        }
+    }
+
+    private fun getEmailFromSharedPreferences(): String? {
+        val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
+        return sharedPreferences.getString("logged_in_email", null)
     }
 
     private fun initDateAndTimePickers() {

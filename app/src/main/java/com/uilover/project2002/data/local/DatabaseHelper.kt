@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.uilover.project2002.data.model.Cast
 import com.uilover.project2002.data.model.Film
+import com.uilover.project2002.data.model.Invoice
 import com.uilover.project2002.data.model.SliderItems
 
 class DatabaseHelper(context: Context) :
@@ -16,12 +17,11 @@ class DatabaseHelper(context: Context) :
         private const val DATABASE_NAME = "movies.db"
         private const val DATABASE_VERSION = 2
 
-        const val TABLE_BANNERS = "banners"
-        const val TABLE_TOP_MOVIES = "top_movies"
         const val TABLE_UPCOMING = "upcoming"
         const val TABLE_FILMS = "films"
         const val TABLE_USER = "user"
         const val TABLE_SLIDER_ITEMS = "slider_items"
+        const val TABLE_INVOICES = "invoices"
 
         const val COLUMN_ID = "id"
         const val COLUMN_TITLE = "title"
@@ -39,13 +39,23 @@ class DatabaseHelper(context: Context) :
         const val COLUMN_USER_ID = "id"
         const val COLUMN_USER_EMAIL = "email"
         const val COLUMN_USER_PASSWORD = "password"
+        const val COLUMN_USERNAME = "username"
+
+        const val COLUMN_SHOW_DATE = "show_date"
+        const val COLUMN_SHOW_TIME = "show_time"
+        const val COLUMN_SEATS = "seats"
+        const val COLUMN_CINEMA_HALL = "cinema_hall"
+        const val COLUMN_TOTAL_PRICE = "total_price"
+        const val COLUMN_BARCODE = "barcode"
+        const val COLUMN_TIMESTAMP = "timestamp"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT, $COLUMN_USER_PASSWORD TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_USER ($COLUMN_USER_ID INTEGER PRIMARY KEY, $COLUMN_USER_EMAIL TEXT, $COLUMN_USERNAME TEXT, $COLUMN_USER_PASSWORD TEXT)")
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_FILMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_PRICE REAL, $COLUMN_TIME TEXT, $COLUMN_TRAILER TEXT, $COLUMN_IMDB INTEGER, $COLUMN_YEAR INTEGER, $COLUMN_GENRE TEXT, $COLUMN_CASTS TEXT)")
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_UPCOMING ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_RELEASE_DATE TEXT)")
         db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_SLIDER_ITEMS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TITLE TEXT, $COLUMN_IMAGE_URL TEXT, $COLUMN_DESCRIPTION TEXT)")
+        db?.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_INVOICES ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_TITLE TEXT, $COLUMN_SHOW_DATE TEXT, $COLUMN_SHOW_TIME TEXT, $COLUMN_SEATS TEXT, $COLUMN_CINEMA_HALL INTEGER, $COLUMN_TOTAL_PRICE REAL, $COLUMN_USER_EMAIL TEXT, $COLUMN_BARCODE TEXT, $COLUMN_TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -53,12 +63,61 @@ class DatabaseHelper(context: Context) :
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_UPCOMING")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_SLIDER_ITEMS")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_INVOICES")
         onCreate(db)
     }
 
-    fun insertUser (email: String, password: String) {
+    fun insertInvoice(invoice: Invoice) {
         val db = writableDatabase
         val values = ContentValues().apply {
+            put(COLUMN_TITLE, invoice.filmTitle)
+            put(COLUMN_SHOW_DATE, invoice.showDate)
+            put(COLUMN_SHOW_TIME, invoice.showTime)
+            put(COLUMN_SEATS, invoice.seats)
+            put(COLUMN_CINEMA_HALL, invoice.cinemaHall)
+            put(COLUMN_TOTAL_PRICE, invoice.totalPrice)
+            put(COLUMN_USER_EMAIL, invoice.email)
+            put(COLUMN_BARCODE, invoice.barcode)
+        }
+        db.insert(TABLE_INVOICES, null, values)
+    }
+
+    fun getAllInvoices(email: String): List<Invoice> {
+        val invoices = mutableListOf<Invoice>()
+        val db = readableDatabase
+        val cursor = db.query(TABLE_INVOICES, null, "$COLUMN_USER_EMAIL = ?", arrayOf(email), null, null, "$COLUMN_TIMESTAMP DESC")
+        if (cursor.moveToFirst()) {
+            do {
+                val titleIndex = cursor.getColumnIndex(COLUMN_TITLE)
+                val showDateIndex = cursor.getColumnIndex(COLUMN_SHOW_DATE)
+                val showTimeIndex = cursor.getColumnIndex(COLUMN_SHOW_TIME)
+                val seatsIndex = cursor.getColumnIndex(COLUMN_SEATS)
+                val cinemaHallIndex = cursor.getColumnIndex(COLUMN_CINEMA_HALL)
+                val totalPriceIndex = cursor.getColumnIndex(COLUMN_TOTAL_PRICE)
+                val emailIndex = cursor.getColumnIndex(COLUMN_USER_EMAIL)
+                val barcodeIndex = cursor.getColumnIndex(COLUMN_BARCODE)
+
+                val invoice = Invoice(
+                    filmTitle = if (titleIndex >= 0) cursor.getString(titleIndex) else "",
+                    showDate = if (showDateIndex >= 0) cursor.getString(showDateIndex) else "",
+                    showTime = if (showTimeIndex >= 0) cursor.getString(showTimeIndex) else "",
+                    seats = if (seatsIndex >= 0) cursor.getString(seatsIndex) else "",
+                    cinemaHall = if (cinemaHallIndex >= 0) cursor.getInt(cinemaHallIndex) else 0,
+                    totalPrice = if (totalPriceIndex >= 0) cursor.getDouble(totalPriceIndex) else 0.0,
+                    email = if (emailIndex >= 0) cursor.getString(emailIndex) else "",
+                    barcode = if (barcodeIndex >= 0) cursor.getString(barcodeIndex) else ""
+                )
+                invoices.add(invoice)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return invoices
+    }
+
+    fun insertUser (username: String, email: String, password: String) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_USERNAME, username)
             put(COLUMN_USER_EMAIL, email)
             put(COLUMN_USER_PASSWORD, password)
         }
@@ -238,4 +297,14 @@ class DatabaseHelper(context: Context) :
         return exists
     }
 
+    fun deleteInvoice(invoice: Invoice) {
+        val db = writableDatabase
+        db.delete(
+            TABLE_INVOICES,
+            "$COLUMN_TITLE = ? AND $COLUMN_SHOW_DATE = ? AND $COLUMN_SHOW_TIME = ? AND $COLUMN_USER_EMAIL = ?",
+            arrayOf(invoice.filmTitle, invoice.showDate, invoice.showTime, invoice.email)
+        )
+    }
 }
+
+

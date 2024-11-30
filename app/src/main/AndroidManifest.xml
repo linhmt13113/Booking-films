@@ -49,5 +49,17 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.TicketSummaryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.InvoiceActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.CartActivity"
+            android:theme="@style/Theme.Project"
+            android:exported="false" />
     </application>
 </manifest>

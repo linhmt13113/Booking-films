@@ -66,6 +66,10 @@ class SeatListAdapter(
 
     override fun getItemCount(): Int = seatList.size
 
+    fun getSelectedSeats(): List<String> {
+        return selectedSeatNames
+    }
+
     interface SelectedSeat {
         fun returnSelected(selectedName: String, num: Int)
     }
