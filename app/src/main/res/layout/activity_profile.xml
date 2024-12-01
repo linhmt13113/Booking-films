@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@color/themeMainColor"
     tools:context=".activities.ProfileActivity">
 
     <TextView
@@ -13,7 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
-        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textSize="24sp"
         android:layout_marginTop="16dp"/>
 
     <TextView
@@ -21,46 +23,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username"
-        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textSize="24sp"
         android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/etOldPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:hint="Old Password"
+        android:textSize="24sp"
         android:inputType="textPassword"
         android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/etNewPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        android:textSize="24sp"
         android:hint="New Password"
         android:inputType="textPassword"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/etNewPasswordConfirm"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:hint="Confirm New Password"
+        android:textSize="24sp"
         android:inputType="textPassword"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/btnChangePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Change Password"
-        android:layout_marginTop="16dp"/>
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:backgroundTint="@color/button"
+        android:layout_marginTop="16sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"/>
 
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:layout_marginTop="16dp"/>
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:backgroundTint="@color/button"
+        android:layout_marginTop="16sp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
         android:id="@+id/chipNavigationBar"
@@ -69,16 +94,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
-        android:background="@drawable/light_black_bg"
+        android:background="@drawable/bottom_nav"
         android:padding="4dp"
-        app:cnb_iconColor="@color/white"
+        app:cnb_iconColor="@color/textColor"
         app:cnb_iconSize="20dp"
         app:cnb_menuResource="@menu/bottom_menu"
         app:cnb_orientationMode="horizontal"
         app:cnb_radius="10dp"
-        app:cnb_unselectedColor="@color/white"
+        app:cnb_unselectedColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+         />
 
 </LinearLayout>

@@ -19,25 +19,28 @@
         <!-- Khai báo các Activity với thuộc tính theme và exported -->
         <activity
             android:name=".activities.RegisterActivity"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
+            android:theme="@style/Base.Theme.Project"
             android:exported="false" />
 
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
+            android:theme="@style/Base.Theme.Project"
             android:exported="false" />
 
         <activity
             android:name=".activities.SeatListActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Base.Theme.Project"/>
 
         <activity
             android:name=".activities.FilmDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Base.Theme.Project"/>
 
         <activity
             android:name=".activities.IntroActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Base.Theme.Project">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -46,20 +49,22 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Base.Theme.Project"
             android:exported="false" />
 
         <activity
             android:name=".activities.TicketSummaryActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Base.Theme.Project"/>
 
         <activity
             android:name=".activities.InvoiceActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Base.Theme.Project"/>
 
         <activity
             android:name=".activities.ProfileActivity"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
+            android:theme="@style/Base.Theme.Project"
             android:exported="false" />
 
 

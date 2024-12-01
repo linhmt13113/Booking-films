@@ -5,86 +5,118 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/themeMainColor"
     tools:context=".activities.InvoiceActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewInfo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonConfirm"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="6dp"
         android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/filmName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:background="@color/themeMainColor"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Film Name"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/filmName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Film Name"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="14dp"/>
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/seats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Seats"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/cinemaId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cinema ID"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/seats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seats"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Price"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/cinemaId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cinema ID"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Price"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/barcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Barcode"
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp" />
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
 
-        <Button
-            android:id="@+id/buttonConfirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Payment Completed"
-            android:layout_marginTop="16dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/barcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Barcode"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginBottom="10dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#d14706"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:text="Payment Completed"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

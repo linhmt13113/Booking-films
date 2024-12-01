@@ -14,13 +14,15 @@
     <color name="purple_700">#7B1FA2</color>
     <color name="teal_200">#80CBC4</color>
     <color name="teal_700">#00796B</color>
-
-
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryVariant">#3700B3</color>
     <color name="colorOnPrimary">#FFFFFF</color>
     <color name="colorSecondary">#03DAC5</color>
     <color name="colorSecondaryVariant">#018786</color>
     <color name="colorOnSecondary">#000000</color>
+    <color name="textColor">#000000</color>
+    <color name="themeMainColor">#F1F1F1</color>
+    <color name="themeDetailColor">#444444</color>
+    <color name="button">#d14706</color>
 
 </resources>
