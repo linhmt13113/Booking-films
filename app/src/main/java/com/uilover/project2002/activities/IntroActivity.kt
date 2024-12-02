@@ -21,7 +21,6 @@ class IntroActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mainRepository = MainRepository(this)
-        // Thêm dữ liệu phim khi khởi động ứng dụng
         addDataFromCode()
 
         binding.startBtn.setOnClickListener {

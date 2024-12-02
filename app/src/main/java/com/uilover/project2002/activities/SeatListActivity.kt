@@ -25,7 +25,7 @@ import java.util.Locale
 class SeatListActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySeatListBinding
     private lateinit var film: Film
-    private lateinit var dbHelper: DatabaseHelper // Khai báo dbHelper
+    private lateinit var dbHelper: DatabaseHelper
     private var price: Double = 0.0
     private var number: Int = 0
     private var selectedDate: LocalDate? = null
@@ -206,7 +206,6 @@ class SeatListActivity : AppCompatActivity() {
             val dateString = selectedDate?.toString() ?: return seatList
             val timeString = selectedTime?.toString() ?: return seatList
 
-            // Lấy danh sách ghế đã đặt từ cơ sở dữ liệu
             val bookedSeats = dbHelper.getBookedSeats(filmTitle, dateString, timeString)
 
             Log.d("SeatListActivity", "Booked seats: $bookedSeats")
@@ -215,9 +214,9 @@ class SeatListActivity : AppCompatActivity() {
                 val row = 'A' + (i / 8)
                 val seatName = "$row${i % 8 + 1}"
                 val seatStatus = if (bookedSeats.contains(seatName)) {
-                    Seat.SeatStatus.UNAVAILABLE // Nếu ghế đã được đặt
+                    Seat.SeatStatus.UNAVAILABLE
                 } else {
-                    Seat.SeatStatus.AVAILABLE // Nếu ghế còn trống
+                    Seat.SeatStatus.AVAILABLE
                 }
                 seatList.add(Seat(seatStatus, seatName))
             }

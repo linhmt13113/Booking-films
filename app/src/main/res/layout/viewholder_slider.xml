@@ -5,6 +5,6 @@
     android:adjustViewBounds="false"
     android:minHeight="300dp"
     android:scaleType="centerCrop"
-   android:id="@+id/imageSlide">
+    android:id="@+id/imageSlide">
 
 </ImageView>

@@ -21,8 +21,9 @@
     <color name="colorSecondaryVariant">#018786</color>
     <color name="colorOnSecondary">#000000</color>
     <color name="textColor">#000000</color>
+    <color name="textColorFilm">#FFFFFFFF</color>
     <color name="themeMainColor">#F1F1F1</color>
     <color name="themeDetailColor">#444444</color>
     <color name="button">#d14706</color>
-
+    <color name="loginAndRegisterTheme">#FFFFFFFF</color>
 </resources>

@@ -9,7 +9,7 @@
         android:id="@+id/nameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="name"
+        android:text="@string/name"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp" />

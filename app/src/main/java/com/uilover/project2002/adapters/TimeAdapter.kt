@@ -22,7 +22,6 @@ class TimeAdapter(
         fun bind(time: String) {
             binding.TextViewTime.text = time
 
-            // Log the binding process
             Log.d("TimeAdapter", "Binding time: $time")
 
             // Change background and text color based on selection
@@ -38,7 +37,6 @@ class TimeAdapter(
                 )
             }
 
-            // Enable click listener for all displayed slots
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {

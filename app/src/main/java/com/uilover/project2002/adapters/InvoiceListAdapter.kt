@@ -1,5 +1,6 @@
 package com.uilover.project2002.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ class InvoiceListAdapter(
         return InvoiceViewHolder(binding)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InvoiceViewHolder, position: Int) {
         val invoice = invoiceList[position]
         holder.binding.filmName.text = invoice.filmTitle
@@ -29,25 +31,23 @@ class InvoiceListAdapter(
         holder.binding.checkBox.isChecked = invoice.isExpanded
         holder.binding.checkBox.visibility = if (isEditMode) View.VISIBLE else View.GONE
 
-        // Thiết lập sự kiện click để mở rộng hoặc thu gọn
         holder.binding.root.setOnClickListener {
             invoice.isExpanded = !invoice.isExpanded
             notifyItemChanged(position)
         }
 
-        // Thiết lập sự kiện click cho CheckBox
         holder.binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
             onItemChecked(invoice, isChecked)
         }
 
-        // Hiển thị thông tin chi tiết nếu mục đang mở rộng
         if (invoice.isExpanded) {
             holder.binding.detailsLayout.visibility = View.VISIBLE
-            holder.binding.time.text = invoice.showTime
-            holder.binding.seats.text = invoice.seats
-            holder.binding.cinemaId.text = invoice.cinemaHall.toString()
-            holder.binding.price.text = invoice.totalPrice.toString()
-            holder.binding.barcode.text = invoice.barcode
+            holder.binding.date.text = "Date: ${invoice.showDate}"
+            holder.binding.time.text = "Time: ${invoice.showTime}"
+            holder.binding.seats.text = "Seats: ${invoice.seats}"
+            holder.binding.cinemaId.text = "Cinema Hall: ${invoice.cinemaHall}"
+            holder.binding.price.text = "Price: ${invoice.totalPrice}"
+            holder.binding.barcode.text ="Barcode: ${invoice.barcode}"
         } else {
             holder.binding.detailsLayout.visibility = View.GONE
         }

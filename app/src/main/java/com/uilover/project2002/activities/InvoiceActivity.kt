@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -13,6 +14,7 @@ class InvoiceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInvoiceBinding
     private lateinit var dbHelper: DatabaseHelper
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInvoiceBinding.inflate(layoutInflater)
@@ -29,17 +31,15 @@ class InvoiceActivity : AppCompatActivity() {
         val email = intent.getStringExtra("email")
         val barcode = generateRandomBarcode()
 
-        binding.filmName.text = filmTitle
-        binding.date.text = showDate
-        binding.time.text = showTime
-        binding.seats.text = seats
+        binding.filmName.text = "Film Title: $filmTitle"
+        binding.date.text = "Date: $showDate"
+        binding.time.text = "Time: $showTime"
+        binding.seats.text = "Seats: $seats"
         binding.cinemaId.text = "Cinema Hall: $cinemaHall"
         binding.price.text = "Total Price: $totalPrice"
         binding.email.text = "Email: $email"
         binding.barcode.text = "Barcode: $barcode"
 
-        // Lưu hóa đơn khi người dùng nhấn nút Confirm
-        // Quay về MainActivity
         binding.buttonConfirm.setOnClickListener {
             val invoice = Invoice(
                 filmTitle = filmTitle ?: "",
@@ -54,22 +54,19 @@ class InvoiceActivity : AppCompatActivity() {
             dbHelper.insertInvoice(invoice)
             Toast.makeText(this, "Invoice saved successfully", Toast.LENGTH_SHORT).show()
 
-            // Lưu ghế đã đặt vào cơ sở dữ liệu
             val bookedSeats = seats?.split(",") ?: listOf()
             for (seat in bookedSeats) {
-                // Cập nhật để truyền đúng các tham số vào hàm khởi tạo Seat
                 val seatToInsert = Seat(
-                    status = Seat.SeatStatus.UNAVAILABLE, // Đặt trạng thái ghế là UNAVAILABLE vì nó đã được đặt
+                    status = Seat.SeatStatus.UNAVAILABLE,
                     name = seat,
                     filmTitle = filmTitle ?: "",
                     showDate = showDate ?: "",
                     showTime = showTime ?: "",
-                    isBooked = true // Đánh dấu ghế là đã đặt
+                    isBooked = true
                 )
-                dbHelper.insertSeat(seatToInsert) // Thêm ghế vào cơ sở dữ liệu
+                dbHelper.insertSeat(seatToInsert)
             }
 
-            // Quay về MainActivity
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

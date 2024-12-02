@@ -28,12 +28,11 @@ class CartActivity : AppCompatActivity() {
 
         dbHelper = DatabaseHelper(this)
 
-        val email = getEmailFromSharedPreferences() // Lấy email từ SharedPreferences
+        val email = getEmailFromSharedPreferences()
 
         if (email != null) {
             val invoices = dbHelper.getAllInvoices(email)
 
-            // Kiểm tra xem có hóa đơn hay không
             if (invoices.isNotEmpty()) {
                 binding.recyclerView.layoutManager = LinearLayoutManager(this)
                 binding.recyclerView.adapter = InvoiceListAdapter(invoices) { invoice, isChecked ->
@@ -60,7 +59,6 @@ class CartActivity : AppCompatActivity() {
             updateEditMode()
         }
 
-        // Xử lý sự kiện cho ChipNavigationBar
         val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
         navBar.setOnItemSelectedListener { id ->
             when (id) {
@@ -102,10 +100,10 @@ class CartActivity : AppCompatActivity() {
 
     private fun deleteSelectedInvoices() {
         selectedInvoices.forEach { invoice ->
-            dbHelper.deleteInvoice(invoice) // Thêm hàm deleteInvoice trong DatabaseHelper
+            dbHelper.deleteInvoice(invoice)
         }
         selectedInvoices.clear()
-        recreate() // Làm mới Activity để cập nhật danh sách hóa đơn
+        recreate()
         Toast.makeText(this, "Invoices deleted successfully", Toast.LENGTH_SHORT).show()
     }
 

@@ -7,17 +7,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="top|center"
-    android:background="#FFFFFF"
+    android:background="@color/loginAndRegisterTheme"
     android:padding="15sp"
     tools:context=".activities.LoginActivity">
 
-    <ImageView
-        android:layout_width="300sp"
-        android:layout_height="160sp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/theme_title"
 
-        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="50sp"
+        android:layout_marginBottom="50sp">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="100dp"
+            android:src="@drawable/twotone_movie_24"
+            android:layout_marginEnd="8dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Movies"
+            android:textColor="@color/textColor"
+            android:textStyle="bold"
+            android:textSize="50sp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
     <TextView
         android:text="@string/login"
@@ -80,7 +100,7 @@
     <Button
         android:id="@+id/btn_login"
         android:text="@string/login"
-        android:textColor="#ffffff"
+        android:textColor="@color/textColor"
         android:textSize="24sp"
         android:backgroundTint="@color/button"
         android:layout_width="wrap_content"
@@ -102,14 +122,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30sp"/>
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="160sp"
-        android:scaleType="centerCrop"
-        android:layout_marginTop="50sp"
-        android:src="@drawable/theme_footer"
 
-        />
 
 
 </LinearLayout>

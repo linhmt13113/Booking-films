@@ -26,6 +26,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription,ImageContrastCheck"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <ImageView
@@ -36,7 +37,8 @@
                 android:layout_marginTop="48dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/back_dark" />
+                app:srcCompat="@drawable/back_dark"
+                tools:ignore="ContentDescription,ImageContrastCheck" />
 
             <eightbitlab.com.blurview.BlurView
                 android:id="@+id/blurView"
@@ -65,27 +67,29 @@
 
                         <TextView
                             android:id="@+id/titleTxt"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="16dp"
                             android:layout_weight="1"
-                            android:text="title"
+                            android:text="@string/title"
                             android:textColor="@color/white"
                             android:textSize="30sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="TextContrastCheck" />
 
                         <TextView
                             android:id="@+id/trailerLink"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Trailer"
-                            android:textColor="@color/light_blue"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:layout_marginEnd="16dp"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            android:text="@string/trailer"
+                            android:textColor="@color/light_blue"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -111,18 +115,20 @@
 
                         <TextView
                             android:id="@+id/movieTimeTxt"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="year"
-                            android:textColor="@color/white" />
+                            android:text="@string/year"
+                            android:textColor="@color/white"
+                            tools:ignore="TextContrastCheck" />
 
                         <TextView
                             android:id="@+id/imdbTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="IMDB"
-                            android:textColor="@color/white" />
+                            android:text="@string/imdb"
+                            android:textColor="@color/white"
+                            tools:ignore="TextContrastCheck" />
                     </LinearLayout>
 
                     <TextView
@@ -130,7 +136,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Summary"
+                        android:text="@string/summary"
                         android:textColor="@color/white"
                         android:textStyle="bold" />
 
@@ -138,7 +144,7 @@
                         android:id="@+id/movieSummeryTxt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="test"
+                        android:text="@string/test"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -146,7 +152,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Cast"
+                        android:text="@string/cast"
                         android:textColor="@color/white"
                         android:textStyle="bold" />
 
@@ -166,7 +172,7 @@
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:background="@drawable/orange_bg"
-                android:text="Buy Ticket"
+                android:text="@string/buy_ticket"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"

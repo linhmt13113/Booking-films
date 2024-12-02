@@ -130,7 +130,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.textView6.setOnClickListener {
-            // Mở một dialog hoặc activity mới để hiển thị tất cả các bộ phim
             showAllFilmsDialog(mainViewModel.films.value ?: emptyList())
         }
     }

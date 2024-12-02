@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="Hello User"
+                    android:text="@string/hello_user"
                     android:textColor="@color/textColor"
                     android:textSize="26sp"
                     android:textStyle="bold"
@@ -54,17 +54,19 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="TextSizeCheck">
 
                 <TextView
                     android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="27dp"
                     android:layout_weight="1"
-                    android:text="Top Movies"
+                    android:text="@string/top_movies"
                     android:textColor="@color/textColor"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="TextSizeCheck" />
 
                 <TextView
                     android:id="@+id/textView6"
@@ -72,9 +74,10 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="See all"
+                    android:text="@string/see_all"
+                    android:textColor="@color/textColor"
                     android:textSize="20sp"
-                    android:textColor="@color/textColor" />
+                    tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -116,10 +119,10 @@
 
                 <TextView
                     android:id="@+id/textViewUpcoming"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Upcoming Movies"
+                    android:text="@string/upcoming_movies"
                     android:textColor="@color/textColor"
                     android:textSize="22sp"
                     android:textStyle="bold" />
