@@ -21,7 +21,7 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cinema Ticket Booking"
+                android:text="@string/cinema_ticket_booking"
                 android:textAlignment="center"
                 android:textSize="30sp"
                 android:textColor="@color/white"
@@ -42,9 +42,7 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:layout_marginTop="8dp"
-                android:text="Discover and book the latest \n
-movies at your favorite cinemas\n
- Easy and fast!" />
+                android:text="@string/discover_and_book_the_latest_n_movies_at_your_favorite_cinemas_n_easy_and_fast" />
 
             <androidx.appcompat.widget.AppCompatButton
                 style="@android:style/Widget.Button"
@@ -54,7 +52,7 @@ movies at your favorite cinemas\n
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="32dp"
-                android:text="Get Started"
+                android:text="@string/get_started"
                 android:textSize="18sp"/>
         </LinearLayout>
     </ScrollView>

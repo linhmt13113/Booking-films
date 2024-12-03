@@ -5,18 +5,18 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/btn_1"
         android:title=""
-        app:cnb_backgroundColor="@color/orange"
+        app:cnb_backgroundColor="@color/colorError"
         app:cnb_iconColor="@color/white" />
     <item
         android:id="@+id/nav_cart"
         android:icon="@drawable/btn_3"
         android:title=""
-        app:cnb_backgroundColor="@color/orange"
+        app:cnb_backgroundColor="@color/colorError"
         app:cnb_iconColor="@color/white" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/btn_4"
         android:title=""
-        app:cnb_backgroundColor="@color/orange"
+        app:cnb_backgroundColor="@color/colorError"
         app:cnb_iconColor="@color/white" />
 </menu>
