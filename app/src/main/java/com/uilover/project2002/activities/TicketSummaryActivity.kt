@@ -28,7 +28,7 @@ class TicketSummaryActivity : AppCompatActivity() {
         binding.textViewShowTime.text = "Time: $showTime"
         binding.textViewSeats.text = "Seats: $seats"
         binding.textViewCinemaHall.text = "Cinema Hall: $cinemaHall"
-        binding.textViewTotalPrice.text = "Total Price: $totalPrice"
+        binding.textViewTotalPrice.text = "Total Price: $$totalPrice"
 
         binding.buttonConfirm.setOnClickListener {
             val intent = Intent(this, InvoiceActivity::class.java).apply {

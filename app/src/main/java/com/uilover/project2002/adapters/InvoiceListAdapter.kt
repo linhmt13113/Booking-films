@@ -26,7 +26,7 @@ class InvoiceListAdapter(
     override fun onBindViewHolder(holder: InvoiceViewHolder, position: Int) {
         val invoice = invoiceList[position]
         holder.binding.filmName.text = invoice.filmTitle
-        holder.binding.date.text = invoice.showDate
+        holder.binding.date.text = "Date: ${invoice.showDate}"
         holder.binding.checkBox.setOnCheckedChangeListener(null)
         holder.binding.checkBox.isChecked = invoice.isExpanded
         holder.binding.checkBox.visibility = if (isEditMode) View.VISIBLE else View.GONE
@@ -46,7 +46,7 @@ class InvoiceListAdapter(
             holder.binding.time.text = "Time: ${invoice.showTime}"
             holder.binding.seats.text = "Seats: ${invoice.seats}"
             holder.binding.cinemaId.text = "Cinema Hall: ${invoice.cinemaHall}"
-            holder.binding.price.text = "Price: ${invoice.totalPrice}"
+            holder.binding.price.text = "Price:  $${invoice.totalPrice}"
             holder.binding.barcode.text ="Barcode: ${invoice.barcode}"
         } else {
             holder.binding.detailsLayout.visibility = View.GONE

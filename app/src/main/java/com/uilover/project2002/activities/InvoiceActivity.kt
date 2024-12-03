@@ -36,7 +36,7 @@ class InvoiceActivity : AppCompatActivity() {
         binding.time.text = "Time: $showTime"
         binding.seats.text = "Seats: $seats"
         binding.cinemaId.text = "Cinema Hall: $cinemaHall"
-        binding.price.text = "Total Price: $totalPrice"
+        binding.price.text = "Total Price: $$totalPrice"
         binding.email.text = "Email: $email"
         binding.barcode.text = "Barcode: $barcode"
 

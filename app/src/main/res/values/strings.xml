@@ -63,4 +63,11 @@
     <string name="cast">Cast</string>
     <string name="buy_ticket">Buy Ticket</string>
     <string name="trailer">Trailer</string>
+    <string name="film_title">Film Title</string>
+    <string name="show_date">Show Date</string>
+    <string name="show_time">Show Time</string>
+    <string name="cinema_hall">Cinema Hall</string>
+    <string name="total_price">Total Price</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
