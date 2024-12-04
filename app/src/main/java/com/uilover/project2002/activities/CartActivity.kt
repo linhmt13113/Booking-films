@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -25,7 +26,7 @@ class CartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         dbHelper = DatabaseHelper(this)
 
         val email = getEmailFromSharedPreferences()
@@ -64,7 +65,12 @@ class CartActivity : AppCompatActivity() {
             when (id) {
                 R.id.nav_home -> {
                     val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left
+                    )
+                    startActivity(intent, options.toBundle())
                     finish()
                 }
                 R.id.nav_cart -> {
@@ -72,7 +78,12 @@ class CartActivity : AppCompatActivity() {
                 }
                  R.id.nav_profile -> {
                      val intent = Intent(this, ProfileActivity::class.java)
-                     startActivity(intent)
+                     val options = ActivityOptions.makeCustomAnimation(
+                         this,
+                         R.anim.slide_in_right,
+                         R.anim.slide_out_left
+                     )
+                     startActivity(intent, options.toBundle())
                  }
             }
         }

@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.icu.text.DecimalFormat
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.uilover.project2002.R
 import com.uilover.project2002.adapters.DateAdapter
 import com.uilover.project2002.adapters.SeatListAdapter
 import com.uilover.project2002.adapters.TimeAdapter
@@ -36,8 +38,8 @@ class SeatListActivity : AppCompatActivity() {
         binding = ActivitySeatListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbHelper = DatabaseHelper(this) // Khởi tạo dbHelper
-
+        dbHelper = DatabaseHelper(this)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         try {
             getIntentExtra()
             setVariable()
@@ -61,7 +63,12 @@ class SeatListActivity : AppCompatActivity() {
                     putExtra("totalPrice", price)
                     putExtra("email", email)
                 }
-                startActivity(intent)
+                val options = ActivityOptions.makeCustomAnimation(
+                    this,
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
+                startActivity(intent, options.toBundle())
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.uilover.project2002.R
 import com.uilover.project2002.adapters.CastListAdapter
 import com.uilover.project2002.adapters.CategoryEachFilmAdapter
 import com.uilover.project2002.data.model.Film
@@ -31,7 +33,7 @@ class FilmDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setFullScreenMode()
-
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         filmDetailViewModel.film.observe(this, { film ->
             film?.let {
                 updateUI(it)
@@ -68,14 +70,24 @@ class FilmDetailActivity : AppCompatActivity() {
         binding.buyTicketBtn.setOnClickListener {
             val intent = Intent(this, SeatListActivity::class.java)
             intent.putExtra("film", item)
-            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(
+                this,
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
+            startActivity(intent, options.toBundle())
         }
 
         binding.trailerLink.setOnClickListener {
             val trailerUrl = item.trailer
             if (trailerUrl != null) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))
-                startActivity(intent)
+                val options = ActivityOptions.makeCustomAnimation(
+                    this,
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
+                startActivity(intent, options.toBundle())
             }
         }
 

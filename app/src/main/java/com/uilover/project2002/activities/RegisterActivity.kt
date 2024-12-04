@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -42,9 +43,17 @@ class RegisterActivity : AppCompatActivity() {
             insets
         }
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
+
         binding.loginNow.setOnClickListener {
             val intent = Intent(applicationContext, LoginActivity::class.java)
-            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(
+                this,
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
+            startActivity(intent, options.toBundle())
             finish()
         }
 
@@ -110,13 +119,23 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun navigateToMain() {
         val intent = Intent(applicationContext, MainActivity::class.java)
-        startActivity(intent)
+        val options = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        startActivity(intent, options.toBundle())
         finish()
     }
 
     private fun navigateToLogin() {
         val intent = Intent(applicationContext, LoginActivity::class.java)
-        startActivity(intent)
+        val options = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        startActivity(intent, options.toBundle())
         finish()
     }
 

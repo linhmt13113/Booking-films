@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -19,6 +20,8 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         dbHelper = DatabaseHelper(this)
 
@@ -52,12 +55,22 @@ class ProfileActivity : AppCompatActivity() {
             when (id) {
                 R.id.nav_home -> {
                     val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left
+                    )
+                    startActivity(intent, options.toBundle())
                     finish()
                 }
                 R.id.nav_cart -> {
                     val intent = Intent(this, CartActivity::class.java)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left
+                    )
+                    startActivity(intent, options.toBundle())
                     finish()
                 }
                 R.id.nav_profile -> {
@@ -96,7 +109,12 @@ class ProfileActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
         sharedPreferences.edit().clear().apply()
         val intent = Intent(this, IntroActivity::class.java)
-        startActivity(intent)
+        val options = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        startActivity(intent, options.toBundle())
         finish()
     }
 }

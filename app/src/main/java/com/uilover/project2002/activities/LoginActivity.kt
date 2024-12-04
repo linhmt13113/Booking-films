@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -7,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.uilover.project2002.R
 import com.uilover.project2002.databinding.ActivityLoginBinding
 import com.uilover.project2002.viewmodels.LoginViewModel
 import com.uilover.project2002.viewmodels.LoginViewModelFactory
@@ -30,9 +32,16 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         binding.registerNow.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(
+                this,
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
+            startActivity(intent, options.toBundle())
             finish()
         }
 
@@ -73,7 +82,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateToMain() {
         val intent = Intent(applicationContext, MainActivity::class.java)
-        startActivity(intent)
+        val options = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        startActivity(intent, options.toBundle())
         finish()
     }
 

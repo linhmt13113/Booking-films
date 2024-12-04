@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.uilover.project2002.R
 import com.uilover.project2002.databinding.ActivityTicketSummaryBinding
 
 class TicketSummaryActivity : AppCompatActivity() {
@@ -14,6 +15,7 @@ class TicketSummaryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTicketSummaryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         val filmTitle = intent.getStringExtra("filmTitle")
         val showDate = intent.getStringExtra("showDate")

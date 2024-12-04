@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
         navBar.setOnItemSelectedListener { id ->
             when (id) {
@@ -51,11 +54,21 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_cart -> {
                     val intent = Intent(this, CartActivity::class.java)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left
+                    )
+                    startActivity(intent, options.toBundle())
                 }
                 R.id.nav_profile -> {
                     val intent = Intent(this, ProfileActivity::class.java)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left
+                    )
+                    startActivity(intent, options.toBundle())
                 }
             }
         }
@@ -149,7 +162,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToIntro() {
         val intent = Intent(applicationContext, IntroActivity::class.java)
-        startActivity(intent)
+        val options = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        startActivity(intent, options.toBundle())
         finish()
     }
 

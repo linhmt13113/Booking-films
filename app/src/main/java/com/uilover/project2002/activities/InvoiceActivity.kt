@@ -1,10 +1,12 @@
 package com.uilover.project2002.activities
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.uilover.project2002.R
 import com.uilover.project2002.data.local.DatabaseHelper
 import com.uilover.project2002.data.model.Invoice
 import com.uilover.project2002.data.model.Seat
@@ -21,6 +23,7 @@ class InvoiceActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = DatabaseHelper(this)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         val filmTitle = intent.getStringExtra("filmTitle")
         val showDate = intent.getStringExtra("showDate")
@@ -68,7 +71,12 @@ class InvoiceActivity : AppCompatActivity() {
             }
 
             val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(
+                this,
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
+            startActivity(intent, options.toBundle())
             finish()
         }
     }
