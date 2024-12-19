@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Films loaded: ${films.size}")
 
                 val topMovies =
-                    films.filter { it.title in listOf("Naruto", "Boruto", "The Dark Knight") }
+                    films.filter { it.title in listOf("Inception", "Interstellar", "The Dark Knight") }
                 val limitedFilms = topMovies
                 filmListAdapter.submitList(limitedFilms)
 
