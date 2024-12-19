@@ -61,6 +61,25 @@ dependencies {
     implementation ("com.github.Dimezis:BlurView:version-2.0.3")
     implementation(libs.androidx.activity)
 
+    // JUnit
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+
+    // Espresso
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+
+    // AndroidX Test
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+
+    // Lifecycle testing for ViewModels
+    testImplementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+
+    // Coroutines for testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
 
 

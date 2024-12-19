@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainViewModel.handleDatabase()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity() {
             if (films != null && films.isNotEmpty()) {
                 Log.d("MainActivity", "Films loaded: ${films.size}")
 
-                val topMovies = films.filter { it.title in listOf("Inception", "Interstellar", "The Dark Knight") }
+                val topMovies = films.filter { it.title in listOf("Naruto", "Boruto", "The Dark Knight") }
                 val limitedFilms = topMovies
                 filmListAdapter.submitList(limitedFilms)
 

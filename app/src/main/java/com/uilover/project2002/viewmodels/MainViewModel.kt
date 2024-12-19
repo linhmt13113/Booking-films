@@ -47,6 +47,12 @@ class MainViewModel(context: Context) : ViewModel() {
         }
     }
 
+    fun handleDatabase() {
+        viewModelScope.launch {
+            mainRepository.handleDatabase()
+        }
+    }
+
     fun loadUpcomingMovies() {
         viewModelScope.launch {
             val upcomingMovies = mainRepository.getUpcomingMovies()

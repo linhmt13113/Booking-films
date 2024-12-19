@@ -8,6 +8,14 @@ import com.uilover.project2002.data.model.User
 
 class MainRepository(val context: Context) {
     private val dbHelper = DatabaseHelper(context)
+    private val RESET_DATABASE = true
+
+    fun handleDatabase() {
+        if (RESET_DATABASE) {
+            dbHelper.resetDatabase()
+            insertInitialData()
+        }
+    }
 
     fun insertInitialData() {
         insertFilms()
@@ -17,7 +25,7 @@ class MainRepository(val context: Context) {
     fun insertFilms() {
         val films = listOf(
             Film(
-                title = "Inception",
+                title = "Naruto",
                 description = "Inception is a science fiction film directed by Christopher Nolan",
                 poster = "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
                 time = "148 min",
@@ -29,7 +37,7 @@ class MainRepository(val context: Context) {
                 casts = arrayListOf(Cast(actor = "Leonardo DiCaprio, "), Cast(actor = "Joseph Gordon-Levitt"))
             ),
             Film(
-                title = "Interstellar",
+                title = "Boruto",
                 description = "Interstellar is a science fiction film directed by Christopher Nolan",
                 poster = "https://upload.wikimedia.org/wikipedia/vi/4/46/Interstellar_poster.jpg",
                 time = "169 min",
@@ -104,6 +112,12 @@ class MainRepository(val context: Context) {
             }
         }
     }
+
+    fun refreshDatabase() {
+        dbHelper.resetDatabase()
+        insertInitialData()
+    }
+
 
     fun getUserByEmail(email: String): User? {
         return dbHelper.getUserByEmail(email)

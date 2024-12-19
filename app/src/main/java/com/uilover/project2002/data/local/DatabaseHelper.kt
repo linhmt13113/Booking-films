@@ -373,6 +373,17 @@ class DatabaseHelper(context: Context) :
         cursor.close()
         return bookedSeats
     }
+
+    fun resetDatabase() {
+        val db = writableDatabase
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_FILMS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_UPCOMING")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_SLIDER_ITEMS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_INVOICES")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_SEATS")
+        onCreate(db)
+    }
+
 }
 
 
