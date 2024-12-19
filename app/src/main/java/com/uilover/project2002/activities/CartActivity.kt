@@ -1,7 +1,6 @@
 package com.uilover.project2002.activities
 
 import android.app.ActivityOptions
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,12 +8,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.uilover.project2002.R
 import com.uilover.project2002.adapters.InvoiceListAdapter
 import com.uilover.project2002.data.local.DatabaseHelper
 import com.uilover.project2002.data.model.Invoice
 import com.uilover.project2002.databinding.ActivityCartBinding
-import com.ismaeldivita.chipnavigation.ChipNavigationBar
 
 class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
@@ -22,6 +21,7 @@ class CartActivity : AppCompatActivity() {
     private val selectedInvoices = mutableListOf<Invoice>()
     private var isEditMode = false
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)

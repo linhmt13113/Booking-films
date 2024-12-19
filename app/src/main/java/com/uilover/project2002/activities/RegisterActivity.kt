@@ -32,6 +32,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -106,7 +107,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun registerUser(username: String, email: String, password: String) {
         binding.progressBar.visibility = View.VISIBLE
 
-        registerViewModel.register(username, email, password).observe(this, { success ->
+        registerViewModel.register(username, email, password).observe(this) { success ->
             binding.progressBar.visibility = View.GONE
             if (success) {
                 showToast("Account created successfully")
@@ -114,7 +115,7 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 showToast("User already exists")
             }
-        })
+        }
     }
 
     private fun navigateToMain() {

@@ -1,5 +1,6 @@
 package com.uilover.project2002.activities
 
+import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.updateUIWithEmail()
     }
 
+    @SuppressLint("SetTextI18n")
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel.handleDatabase()
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel.loggedInUserEmail.observe(this, { email->
+        mainViewModel.loggedInUserEmail.observe(this) { email ->
             if (email != null) {
                 lifecycleScope.launch {
                     val user = mainViewModel.getUserByEmail(email)
@@ -83,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 navigateToIntro()
             }
-        })
+        }
 
         mainViewModel.insertInitialData()
 
@@ -115,11 +118,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        mainViewModel.films.observe(this, { films ->
+        mainViewModel.films.observe(this) { films ->
             if (films != null && films.isNotEmpty()) {
                 Log.d("MainActivity", "Films loaded: ${films.size}")
 
-                val topMovies = films.filter { it.title in listOf("Naruto", "Boruto", "The Dark Knight") }
+                val topMovies =
+                    films.filter { it.title in listOf("Naruto", "Boruto", "The Dark Knight") }
                 val limitedFilms = topMovies
                 filmListAdapter.submitList(limitedFilms)
 
@@ -128,20 +132,20 @@ class MainActivity : AppCompatActivity() {
                 binding.progressBarSlider.visibility = View.VISIBLE
                 Log.d("MainActivity", "Films list is empty or null")
             }
-        })
+        }
 
-        mainViewModel.topMovies.observe(this, { topMovies ->
+        mainViewModel.topMovies.observe(this) { topMovies ->
             Log.d("MainActivity", "Top Movies loaded: ${topMovies.size}")
-        })
+        }
 
-        mainViewModel.upcomingMovies.observe(this, { upcomingMovies ->
+        mainViewModel.upcomingMovies.observe(this) { upcomingMovies ->
             if (upcomingMovies != null && upcomingMovies.isNotEmpty()) {
                 Log.d("MainActivity", "Upcoming Movies loaded: ${upcomingMovies.size}")
                 upcomingFilmListAdapter.submitList(upcomingMovies)
             } else {
                 Log.d("MainActivity", "No Upcoming Movies available")
             }
-        })
+        }
 
         binding.textView6.setOnClickListener {
             showAllFilmsDialog(mainViewModel.films.value ?: emptyList())

@@ -16,6 +16,7 @@ class InvoiceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInvoiceBinding
     private lateinit var dbHelper: DatabaseHelper
 
+    @Suppress("DEPRECATION")
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

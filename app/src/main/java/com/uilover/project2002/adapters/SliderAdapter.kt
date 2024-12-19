@@ -36,9 +36,4 @@ class SliderAdapter(
 
     override fun getItemCount(): Int = sliderItems.size
 
-    fun updateSliderItems(newItems: List<SliderItems>) {
-        sliderItems.clear()
-        sliderItems.addAll(newItems)
-        notifyDataSetChanged()
-    }
 }

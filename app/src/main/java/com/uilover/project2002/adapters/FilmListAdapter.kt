@@ -1,5 +1,6 @@
 package com.uilover.project2002.adapters
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -36,6 +37,7 @@ class FilmListAdapter(private val disableClick: Boolean = false) : RecyclerView.
         return films.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(films: List<Film>) {
         this.films.clear()
         this.films.addAll(films)

@@ -4,17 +4,14 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Cast(
-    var picUrl:String?=null,
     var actor:String?=null
 ):Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
         parcel.readString()
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(picUrl)
         parcel.writeString(actor)
     }
 

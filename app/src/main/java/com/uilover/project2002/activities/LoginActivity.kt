@@ -27,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -67,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        loginViewModel.login(email, password).observe(this, { success ->
+        loginViewModel.login(email, password).observe(this) { success ->
             binding.progressBar.visibility = View.GONE
             if (success) {
                 val sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE)
@@ -77,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 showToast("Authentication failed.")
             }
-        })
+        }
     }
 
     private fun navigateToMain() {

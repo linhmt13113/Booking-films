@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.uilover.project2002.activities
 
+import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Intent
 import android.icu.text.DecimalFormat
@@ -48,7 +51,7 @@ class SeatListActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
         binding.button.setOnClickListener {
             val seats = (binding.seatRecyclerview.adapter as SeatListAdapter).getSelectedSeats()
@@ -90,7 +93,7 @@ class SeatListActivity : AppCompatActivity() {
                 updateAvailableTimeSlots(parsedDate)
                 binding.TimeRecyclerview.visibility = View.VISIBLE
                 binding.seatRecyclerview.visibility = View.GONE
-            } catch (e: Exception) {}
+            } catch (_: Exception) {}
         }
 
         binding.TimeRecyclerview.visibility = View.GONE
@@ -167,6 +170,7 @@ class SeatListActivity : AppCompatActivity() {
 
         try {
             val seatAdapter = SeatListAdapter(generateSeats(), object : SeatListAdapter.SelectedSeat {
+                @SuppressLint("SetTextI18n")
                 override fun returnSelected(selectedName: String, num: Int) {
                     binding.numberSelectedTxt.text = "$num Seat Selected"
                     val df = DecimalFormat("#.##")
@@ -177,7 +181,7 @@ class SeatListActivity : AppCompatActivity() {
             })
             binding.seatRecyclerview.adapter = seatAdapter
             binding.seatRecyclerview.isNestedScrollingEnabled = false
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
     }
 
     private fun setVariable() {

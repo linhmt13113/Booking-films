@@ -10,6 +10,7 @@ import com.uilover.project2002.databinding.ActivityTicketSummaryBinding
 class TicketSummaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTicketSummaryBinding
 
+    @Suppress("DEPRECATION")
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

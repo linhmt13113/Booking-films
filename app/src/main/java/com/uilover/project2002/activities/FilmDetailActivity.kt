@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.uilover.project2002.activities
 
+import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
@@ -34,11 +37,11 @@ class FilmDetailActivity : AppCompatActivity() {
 
         setFullScreenMode()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        filmDetailViewModel.film.observe(this, { film ->
+        filmDetailViewModel.film.observe(this) { film ->
             film?.let {
                 updateUI(it)
             }
-        })
+        }
 
         val item: Film = intent.getParcelableExtra("object")!!
         filmDetailViewModel.setFilm(item)
@@ -51,6 +54,7 @@ class FilmDetailActivity : AppCompatActivity() {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateUI(item: Film) {
         val requestOptions = RequestOptions().transform(CenterCrop(), GranularRoundedCorners(0f, 0f, 50f, 50f))
 
@@ -102,13 +106,13 @@ class FilmDetailActivity : AppCompatActivity() {
         binding.blurView.outlineProvider = ViewOutlineProvider.BACKGROUND
         binding.blurView.clipToOutline = true
 
-        item.genre?.let {
+        item.genre.let {
             binding.genreView.adapter = CategoryEachFilmAdapter(it)
             binding.genreView.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         }
 
-        item.casts?.let {
+        item.casts.let {
             binding.castListView.layoutManager =
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             binding.castListView.adapter = CastListAdapter(it)
