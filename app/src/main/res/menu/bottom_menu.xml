@@ -4,19 +4,19 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/btn_1"
-        android:title=""
+        android:title="@string/home"
         app:cnb_backgroundColor="@color/colorError"
         app:cnb_iconColor="@color/white" />
     <item
         android:id="@+id/nav_cart"
         android:icon="@drawable/btn_3"
-        android:title=""
+        android:title="@string/cart"
         app:cnb_backgroundColor="@color/colorError"
         app:cnb_iconColor="@color/white" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/btn_4"
-        android:title=""
+        android:title="@string/profile"
         app:cnb_backgroundColor="@color/colorError"
         app:cnb_iconColor="@color/white" />
 </menu>

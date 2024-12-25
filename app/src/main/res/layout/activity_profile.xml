@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/themeMainColor"
+    android:weightSum="1"
     tools:context=".activities.ProfileActivity">
 
     <TextView
@@ -96,29 +97,12 @@
         android:paddingLeft="10sp"
         android:paddingRight="10sp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 
-    <com.ismaeldivita.chipnavigation.ChipNavigationBar
-        android:id="@+id/chipNavigationBar"
+
+    <include
+        layout="@layout/chip_navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/bottom_nav"
-        android:padding="4dp"
-        app:cnb_iconColor="@color/textColor"
-        app:cnb_iconSize="20dp"
-        app:cnb_menuResource="@menu/bottom_menu"
-        app:cnb_orientationMode="horizontal"
-        app:cnb_radius="10dp"
-        app:cnb_unselectedColor="@color/textColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-         />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="270dp" />
 
 </LinearLayout>
