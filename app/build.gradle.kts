@@ -81,6 +81,7 @@ dependencies {
     // Coroutines for testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
+    implementation ("com.ismaeldivita:chip-navigation-bar:3.0.0")
 
 
 
