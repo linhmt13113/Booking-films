@@ -8,7 +8,7 @@ import com.uilover.project2002.data.model.User
 
 class MainRepository(val context: Context) {
     private val dbHelper = DatabaseHelper(context)
-    private val resetDatabase = true
+    private val resetDatabase = false
 
     fun handleDatabase() {
         if (resetDatabase) {

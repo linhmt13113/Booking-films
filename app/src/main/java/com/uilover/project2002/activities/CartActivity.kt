@@ -2,6 +2,7 @@ package com.uilover.project2002.activities
 
 import android.app.ActivityOptions
 import android.content.Intent
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
