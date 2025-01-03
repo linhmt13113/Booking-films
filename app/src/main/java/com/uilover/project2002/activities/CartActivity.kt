@@ -2,7 +2,6 @@ package com.uilover.project2002.activities
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -20,7 +19,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private lateinit var dbHelper: DatabaseHelper
     private val selectedInvoices = mutableListOf<Invoice>()
-    private var isEditMode = false
+    private var isEditMode = true
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
