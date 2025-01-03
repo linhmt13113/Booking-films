@@ -24,6 +24,9 @@ class InvoiceActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = DatabaseHelper(this)
+
+        window.statusBarColor = resources.getColor(R.color.themeMainColor, theme)
+
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         val filmTitle = intent.getStringExtra("filmTitle")

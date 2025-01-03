@@ -39,7 +39,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/hello_user"
-                    android:textColor="@color/textColor"
+                    android:textColor="@color/textUser"
                     android:textSize="26sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +64,7 @@
                     android:layout_height="27dp"
                     android:layout_weight="1"
                     android:text="@string/top_movies"
-                    android:textColor="@color/textColor"
+                    android:textColor="@color/textTitle"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     tools:ignore="TextSizeCheck" />
@@ -76,7 +76,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/see_all"
-                    android:textColor="@color/textColor"
+                    android:textColor="@color/textTitle"
                     android:textSize="20sp"
                     tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/upcoming_movies"
-                    android:textColor="@color/textColor"
+                    android:textColor="@color/textTitle"
                     android:textSize="22sp"
                     android:textStyle="bold" />
             </LinearLayout>

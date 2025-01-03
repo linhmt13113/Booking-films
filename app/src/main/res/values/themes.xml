@@ -1,11 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.Project" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#9C27B0</item>
-        <item name="colorPrimaryVariant">#7B1FA2</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#80CBC4</item>
-        <item name="colorSecondaryVariant">#00796B</item>
-        <item name="colorOnSecondary">#FF000000</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
     </style>
 
     <style name="Theme.Project" parent="Base.Theme.Project" />

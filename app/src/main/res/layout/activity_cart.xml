@@ -15,7 +15,7 @@
         android:text="@string/movie_tickets_booked"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/textColor"
+        android:textColor="@color/textTitle"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +36,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
         android:text="@string/delete"
+        android:textColor="@color/buttonText"
         android:visibility="gone"
         android:backgroundTint="@color/button"
         app:layout_constraintBottom_toTopOf="@+id/chipNavigationBar"
@@ -50,8 +51,8 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/button"
-
         android:text="@string/edit"
+        android:textColor="@color/buttonText"
         app:layout_constraintBottom_toTopOf="@+id/buttonDelete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

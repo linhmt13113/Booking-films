@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
+        navBar.setItemSelected(R.id.nav_home, true)
         navBar.setOnItemSelectedListener { id ->
             when (id) {
                 R.id.nav_home -> {

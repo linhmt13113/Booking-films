@@ -26,7 +26,7 @@ class TimeAdapter(
 
             // Change background and text color based on selection
             if (selectedPosition == adapterPosition) {
-                binding.TextViewTime.setBackgroundResource(R.drawable.white_bg)
+                binding.TextViewTime.setBackgroundResource(R.drawable.orange_bg)
                 binding.TextViewTime.setTextColor(
                     ContextCompat.getColor(itemView.context, R.color.black)
                 )

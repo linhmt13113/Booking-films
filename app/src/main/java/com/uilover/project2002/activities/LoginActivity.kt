@@ -2,6 +2,7 @@ package com.uilover.project2002.activities
 
 import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -32,6 +33,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.statusBarColor = resources.getColor(R.color.themeMainColor, theme)
 
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 

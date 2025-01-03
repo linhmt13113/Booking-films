@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="top|center"
-    android:background="@color/loginAndRegisterTheme"
+    android:background="@color/themeMainColor"
     android:padding="15sp"
     tools:context=".activities.RegisterActivity">
 
@@ -42,7 +42,7 @@
         android:textSize="36sp"
         android:textStyle="bold"
         android:fontFamily="sans-serif"
-        android:textColor="@color/button"
+        android:textColor="@color/textTitle"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,6 +58,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username"
             android:hint="@string/username"
+            android:textColorHint="@color/textHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -75,6 +76,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
             android:hint="@string/email"
+            android:textColorHint="@color/textHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -92,6 +94,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
             android:hint="@string/password"
+            android:textColorHint="@color/textHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -109,6 +112,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirmPassword"
             android:hint="@string/confirm_password"
+            android:textColorHint="@color/textHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -125,7 +129,7 @@
     <Button
         android:id="@+id/btn_register"
         android:text="@string/register"
-        android:textColor="@color/textColor"
+        android:textColor="@color/buttonText"
         android:textSize="24sp"
         android:backgroundTint="@color/button"
         android:layout_width="wrap_content"

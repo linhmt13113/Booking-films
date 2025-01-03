@@ -19,13 +19,16 @@ class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private lateinit var dbHelper: DatabaseHelper
     private val selectedInvoices = mutableListOf<Invoice>()
-    private var isEditMode = true
+    private var isEditMode = false
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.statusBarColor = resources.getColor(R.color.themeMainColor, theme)
+
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         dbHelper = DatabaseHelper(this)
 
@@ -61,6 +64,7 @@ class CartActivity : AppCompatActivity() {
         }
 
         val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
+        navBar.setItemSelected(R.id.nav_cart, true)
         navBar.setOnItemSelectedListener { id ->
             when (id) {
                 R.id.nav_home -> {
@@ -121,5 +125,10 @@ class CartActivity : AppCompatActivity() {
     private fun updateEditMode() {
         val adapter = binding.recyclerView.adapter as InvoiceListAdapter
         adapter.setEditMode(isEditMode)
+
+        if (!isEditMode) {
+            binding.buttonDelete.visibility = View.GONE
+            selectedInvoices.clear()
+        }
     }
 }

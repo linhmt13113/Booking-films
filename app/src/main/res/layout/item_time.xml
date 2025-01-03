@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="33dp"
     android:layout_margin="8dp"
-    android:background="@drawable/light_black_bg"
+    android:background="@color/themeMainColor"
     android:gravity="center"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"

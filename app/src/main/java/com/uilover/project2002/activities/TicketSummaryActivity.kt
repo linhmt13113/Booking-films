@@ -16,6 +16,9 @@ class TicketSummaryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTicketSummaryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.statusBarColor = resources.getColor(R.color.themeMainColor, theme)
+
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         val filmTitle = intent.getStringExtra("filmTitle")

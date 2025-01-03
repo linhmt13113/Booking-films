@@ -22,7 +22,7 @@ class DateAdapter(private val dates: List<String>, private val clickListener: (S
                 binding.datMonthTxt.text = "${dateParts[1]} ${dateParts[2]}"
 
                 if (selectedPosition == adapterPosition) {
-                    binding.mailLayout.setBackgroundResource(R.drawable.white_bg)
+                    binding.mailLayout.setBackgroundResource(R.drawable.orange_bg)
                     binding.dayTxt.setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
                     binding.datMonthTxt.setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
                 } else {

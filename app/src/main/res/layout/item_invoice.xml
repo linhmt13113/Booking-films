@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/film_name"
                 android:textSize="24sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/textTitle"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp" />
 
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/date"
                 android:textSize="18sp"
-                android:textColor="@color/textColor" />
+                android:textColor="@color/textSecondary" />
         </LinearLayout>
     </LinearLayout>
 

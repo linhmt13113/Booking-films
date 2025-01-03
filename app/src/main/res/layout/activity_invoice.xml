@@ -36,7 +36,7 @@
                 android:text="@string/film_name"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="@color/textColor"
+                android:textColor="@color/textTitle"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="14dp"/>
 
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/email"
                 android:textSize="22sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/textUser"
                 android:layout_marginBottom="10dp"/>
 
             <TextView
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/barcode"
                 android:textSize="22sp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/textRating"
                 android:layout_marginBottom="10dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -114,7 +114,7 @@
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:text="@string/payment_completed"
-        android:textColor="@color/textColor"
+        android:textColor="@color/buttonText"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

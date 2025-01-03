@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/close"
-        android:textColor="@color/textColor"
+        android:textColor="@color/colorError"
         android:textSize="20sp"
         android:layout_marginBottom="8dp" />
 

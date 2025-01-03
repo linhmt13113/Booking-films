@@ -24,6 +24,8 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        window.statusBarColor = resources.getColor(R.color.themeMainColor, theme)
+
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
         dbHelper = DatabaseHelper(this)
@@ -54,6 +56,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val navBar: ChipNavigationBar = findViewById(R.id.chipNavigationBar)
+        navBar.setItemSelected(R.id.nav_profile, true)
         navBar.setOnItemSelectedListener { id ->
             when (id) {
                 R.id.nav_home -> {

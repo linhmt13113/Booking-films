@@ -6,7 +6,7 @@
     android:layout_width="65dp"
     android:layout_height="90dp"
     android:layout_margin="8dp"
-    android:background="@drawable/light_black_bg"
+    android:background="@color/themeMainColor"
     tools:ignore="TextSizeCheck">
 
     <TextView
@@ -46,6 +46,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dayTxt"
-        app:srcCompat="@drawable/dash_line_black"
+        app:srcCompat="@color/themeMainColor"
         tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>
