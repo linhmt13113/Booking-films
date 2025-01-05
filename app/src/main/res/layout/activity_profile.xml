@@ -8,6 +8,7 @@
     android:gravity="top|center"
     android:padding="16dp"
     android:background="@color/themeMainColor"
+    android:weightSum="1"
     tools:context=".activities.ProfileActivity">
 
     <TextView
@@ -109,6 +110,6 @@
         layout="@layout/chip_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="270dp" />
+        android:layout_marginTop="320dp" />
 
 </LinearLayout>
