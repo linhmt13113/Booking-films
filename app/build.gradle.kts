@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.uilover.project2002"
+    namespace = "com.flickfanatic.bookingfilms"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.uilover.project2002"
+        applicationId = "com.flickfanatic.bookingfilms"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -74,7 +74,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test:core:1.5.0")
-    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:runner:1.6.2")
 
     // Lifecycle testing for ViewModels
     testImplementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
