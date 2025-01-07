@@ -70,7 +70,7 @@
 
         <activity
             android:name=".activities.CartActivity"
-            android:theme="@style/Theme.Project"
+            android:theme="@style/Base.Theme.Project"
             android:exported="false" />
     </application>
 </manifest>

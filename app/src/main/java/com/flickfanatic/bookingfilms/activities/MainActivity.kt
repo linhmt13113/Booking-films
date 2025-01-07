@@ -43,10 +43,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+        window.statusBarColor = resources.getColor(R.color.themeMainColor, theme)
 
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 
@@ -92,7 +89,6 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.insertInitialData()
 
         setupRecyclerView()
-        setupSliderRecyclerView()
         setupUpcomingRecyclerView()
         observeViewModel()
         loadFilms()
@@ -103,12 +99,6 @@ class MainActivity : AppCompatActivity() {
         filmListAdapter = FilmListAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerView.adapter = filmListAdapter
-    }
-
-    private fun setupSliderRecyclerView() {
-        sliderAdapter = SliderAdapter(mutableListOf())
-        binding.recyclerViewSlider.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclerViewSlider.adapter = sliderAdapter
     }
 
     private fun setupUpcomingRecyclerView() {
