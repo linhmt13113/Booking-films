@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Films loaded: ${films.size}")
 
                 val topMovies =
-                    films.filter { it.title in listOf("Inception", "Interstellar", "The Dark Knight") }
+                    films.filter { it.title in listOf("Mufasa: The Lion King", "Transformers One", "Wicked", "Spirited Away", "404 Sukeenirun... Run Run") }
                 val limitedFilms = topMovies
                 filmListAdapter.submitList(limitedFilms)
 
