@@ -156,7 +156,7 @@ class MainRepository(val context: Context) {
     fun insertUpcomingMovies() {
         val upcomingMovies = listOf(
             Film(
-                title = "Captain Ameria: Brave New World",
+                title = "Captain America: Brave New World",
                 description = "Sam Wilson, the new Captain America, finds himself in the middle of an international incident and must discover the motive behind a nefarious global plan.",
                 poster = "https://m.media-amazon.com/images/M/MV5BZDBlZTAzYzYtYjczZS00MmQyLTlkYjMtNzY2MzU3YjRjYTJiXkEyXkFqcGc@._V1_.jpg"
             ),
