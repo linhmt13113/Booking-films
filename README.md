@@ -1,4 +1,4 @@
-SDK and Tools: The project is using Android Studio Flamingo is version 2022.2.1 Patch 2, and Kotlin version 1.8.0
+SDK and Tools: The project is using Android Studio LadyBug is version 2024.2.1.12 Patch 3, and Kotlin version 1.8.0
 
 Gradle is 8.7.3
 
